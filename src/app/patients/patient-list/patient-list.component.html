@@ -1,0 +1,65 @@
+<section class="parent padding-top">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center; ">
+    <mat-card-title style="background-color: skyblue; text-align: center;">View All Patients</mat-card-title>
+    <div style="align-content: center;">
+      <table mat-table style="width: 100%; " *ngIf="showTable" class="mat-elevation-z8" [dataSource]="dataSource">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-form-field appearance="none">
+              <mat-label>Patient Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <mat-icon style="font-size: 18px;">
+                  search
+                </mat-icon>
+              </mat-label>
+              <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+            </mat-form-field>
+          </th>
+          <td mat-cell *matCellDef="let element" style="cursor: pointer;" (click)="redirectToPatientDetail(element.id)">
+            {{element.firstName}} {{ element.middleName }} {{ element.lastName }} </td>
+        </ng-container>
+        <hr>
+        <ng-container matColumnDef="gender">
+          <th mat-header-cell *matHeaderCellDef> Gender </th>
+          <td mat-cell *matCellDef="let element"> {{element.gender }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="age">
+          <th mat-header-cell *matHeaderCellDef> Age </th>
+          <td mat-cell *matCellDef="let element"> {{element.age}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef> Address </th>
+          <td mat-cell *matCellDef="let element"> {{ element.city }} {{element.address}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="telephone">
+          <th mat-header-cell *matHeaderCellDef> Telephone </th>
+          <td mat-cell *matCellDef="let element"> {{element.telephone}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="update">
+          <th mat-header-cell *matHeaderCellDef> Add Visit </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="accent" (click)="redirectToAddVisit(element.id)">
+              <mat-icon class="mat-18">system_update</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef> Delete </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button color="warn" (click)="redirectToDelete(element.id)">
+              <mat-icon class="mat-18">delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons 
+        [length]="dataSource.data.length" (page)="custom()" ></mat-paginator>
+    </div>
+  </mat-card>
+</section>

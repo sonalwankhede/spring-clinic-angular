@@ -1,0 +1,14 @@
+<div style="padding-top: 30px;padding-bottom: 30px;">
+  <h1 mat-dialog-title>
+    <mat-icon class="mat-18" style="color: red;vertical-align: text-bottom;">warning</mat-icon> {{title}}
+  </h1>
+
+  <div mat-dialog-content style="padding: 30px;">
+    <p>{{message}}</p>
+  </div>
+
+  <div mat-dialog-actions>
+    <button mat-button (click)="onDismiss()">No</button>
+    <button mat-raised-button color="primary" (click)="onConfirm()">Yes</button>
+  </div>
+</div>

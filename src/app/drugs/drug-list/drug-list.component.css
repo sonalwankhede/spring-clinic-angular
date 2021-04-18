@@ -1,0 +1,17 @@
+.table {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    min-width: 500px;
+}
+
+.th.mat-header-cell {
+    text-align: left;
+    max-width: 300px;
+}
+.mat-row:hover {
+    background-color: #ec971f;
+  }
+  mat-form-field.mat-form-field-should-float label {
+    font-weight: bolder !important;
+  }

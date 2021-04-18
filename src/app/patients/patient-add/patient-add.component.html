@@ -1,0 +1,97 @@
+<section class="parent padding-top">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center; ">
+    <mat-card-title style="background-color: skyblue; ">Add a New Patient</mat-card-title>
+    <div *ngIf="!loader" style="align-content: center;">
+
+      <form [formGroup]="patientForm" autocomplete="off" novalidate (ngSubmit)="createPatient(patientForm.value)"
+        fxLayout="column wrap" fxLayoutAlign="center center" fxLayoutGap="10px">
+        <mat-card-content>
+          <mat-form-field appearance="outline">
+            <mat-label>First Name</mat-label>
+            <input class="input" matInput type="text" placeholder="Patient's First Name" formControlName="firstName"
+              id="firstName">
+            <mat-hint align="end">Not more then 60 characters long.</mat-hint>
+            <mat-error *ngIf="hasError('firstName', 'required')">First Name is required</mat-error>
+            <mat-error *ngIf="hasError('firstName', 'maxlength')">You have more than 60 characters</mat-error>
+          </mat-form-field>
+          &nbsp;&nbsp;&nbsp;
+          <mat-form-field appearance="outline">
+            <mat-label>Middle Name</mat-label>
+            <input class="input" matInput type="text" placeholder="Patient's Middle Name" formControlName="middleName"
+              id="middleName">
+            <mat-hint align="end">Not more then 60 characters long.</mat-hint>
+          </mat-form-field>
+          &nbsp;&nbsp;&nbsp;
+          <mat-form-field appearance="outline">
+            <mat-label>Last Name</mat-label>
+            <input class="input" matInput type="text" placeholder="Patient's Last Name" formControlName="lastName"
+              id="lastName">
+            <mat-hint align="end">Not more then 60 characters long.</mat-hint>
+            <mat-error *ngIf="hasError('lastName', 'required')">Last Name is required</mat-error>
+            <mat-error *ngIf="hasError('lastName', 'maxlength')">You have more than 60 characters</mat-error>
+          </mat-form-field>          
+        </mat-card-content>
+
+        <mat-card-content>
+          <mat-radio-group formControlName="gender">
+            <mat-radio-button value="Female" #female name="female" required>Female</mat-radio-button>
+            &nbsp;&nbsp;
+            <mat-radio-button value="Male" #male name="male" required>Male</mat-radio-button>
+          </mat-radio-group>
+          &nbsp;&nbsp;
+          <mat-form-field style="   width:130px !important;" appearance="outline">
+            <mat-label>Age</mat-label>
+            <input class="input" matInput type="number" min="0" placeholder="Patient's Age" formControlName="age"
+              id="age">
+            <mat-error *ngIf="hasError('age', 'required')">Age is required</mat-error>
+            <mat-error *ngIf="hasError('age', 'min')">Age can't be negative</mat-error>
+          </mat-form-field>
+          
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <mat-form-field appearance="outline">
+            <mat-label>Address</mat-label>
+            <input class="input" matInput type="text" placeholder="Patient's address" formControlName="address">
+            <mat-hint align="end">Not more then 100 characters long.</mat-hint>
+          </mat-form-field>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+
+          <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
+            <input class="input" matInput type="text" placeholder="Patient's City" formControlName="city">
+            <mat-hint align="end">Not more then 100 characters long.</mat-hint>
+          </mat-form-field>
+        </mat-card-content>
+
+        <mat-card-content *ngIf="showLists">
+          <app-chips-add [formCtrlName]="drugAllergies" chipLabel='Drug Allergies' [isMandatory]=true
+            [chipsList]="drugAllergiesList" [selectable]=true [removable]=true 
+            placeholder='Does patient have any drug allergy?' [selectedChipsList]="finalDrugAllergiesList">
+          </app-chips-add>
+          <mat-error *ngIf="finalDrugAllergiesList.length == 0">Drug Allergies required</mat-error>
+        </mat-card-content>
+
+        <mat-card-content *ngIf="showLists">
+
+          <app-chips-add [formCtrlName]="otherAllergies" chipLabel='Other Allergies' [isMandatory]=true
+            [chipsList]="otherAllergiesList" [selectable]=true [removable]=true
+            placeholder='Does patient have any other allergy?' [selectedChipsList]="finalOtherAllergiesList">
+          </app-chips-add>
+          <mat-error *ngIf="finalOtherAllergiesList.length == 0">Other Allergies required</mat-error>
+        </mat-card-content>
+        <mat-card-content *ngIf="showLists">
+          <app-chips-add [formCtrlName]="history" chipLabel='Known Case' [chipsList]="caseList" [isMandatory]=true
+            [selectable]=true [removable]=true placeholder='Does patient have any peculiar history?'
+            [selectedChipsList]="finalCaseList" >
+          </app-chips-add>
+          <mat-error *ngIf="finalCaseList.length == 0">Known cases required</mat-error>
+        </mat-card-content>
+
+        <mat-card-actions align="center">
+          <button mat-raised-button color="primary" [disabled]="!checkIfFormIsValid()">Create</button>
+          <button type="button" mat-raised-button color="warn" (click)="onCancel()">Cancel</button>
+        </mat-card-actions>
+      </form>
+    </div>
+    <mat-spinner *ngIf="loader"></mat-spinner>
+  </mat-card>
+</section>

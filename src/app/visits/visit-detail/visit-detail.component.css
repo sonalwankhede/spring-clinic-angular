@@ -1,0 +1,51 @@
+.main-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.export-container {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+}
+
+.m-t-xl {
+  margin-top: 40px;
+}
+.table {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 500px;
+}
+
+.th.mat-header-cell {
+  text-align: left;
+  max-width: 300px;
+}
+.mat-row:hover {
+  background-color: #ec971f;
+}
+mat-form-field.mat-form-field-should-float label {
+  font-weight: bolder !important;
+}
+.custom {  
+  width: 19cm;
+  height: 25cm; 
+}
+.th-td {
+  border: 1px dotted black;
+  border-collapse: collapse;
+  padding: 5px;
+  text-align: left;    
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+.margin-bottom {
+  margin-bottom: 40px;
+}

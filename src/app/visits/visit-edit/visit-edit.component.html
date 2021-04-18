@@ -1,0 +1,145 @@
+<section class="parent padding-top">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;" *ngIf="showVisitForm">
+    <mat-card-title style="background-color: skyblue; ">Edit Visit For :: {{visit.patient.firstName}}
+      {{visit.patient.lastName}}</mat-card-title>
+    <div style="align-content: center;">
+
+      <form [formGroup]="visitForm" autocomplete="off" novalidate (ngSubmit)="onSubmit(visitForm.value)"
+        fxLayout="column wrap" fxLayoutAlign="center center" fxLayoutGap="10px">
+        <mat-card-content style="text-align: end;">
+          <mat-form-field appearance="none" style="text-align: end;">
+            <input class="input" matInput [matDatepicker]="picker" placeholder="Patient Visit Date"
+              formControlName="visitDate" id="visitDate" readonly>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker [startAt] = "visit.visitDate"></mat-datepicker>
+          </mat-form-field>
+        </mat-card-content>
+
+        <mat-card-content>
+          <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
+            <mat-label>Temparature (F)</mat-label>
+            <input class="input" matInput type="number" placeholder="Temperature" formControlName="temperature">
+            <mat-hint align="end">Temparature is madatory.</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
+            <mat-label>Pulse</mat-label>
+            <input class="input" matInput type="number" placeholder="Pulse" formControlName="pulse">
+            <mat-hint align="end">Pulse is madatory.</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
+            <mat-label>SpO2</mat-label>
+            <input class="input" matInput type="number" placeholder="SpO2" formControlName="spo2">
+            <mat-hint align="end">SpO2 is madatory.</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
+            <mat-label>Respiration rate</mat-label>
+            <input class="input" matInput type="number" placeholder="Respiration Rate"
+              formControlName="respirationRate">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
+            <mat-label>Blood Pressure</mat-label>
+            <input class="input" matInput type="number" placeholder="Blood Pressure" formControlName="bloodPressure">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
+            <mat-label>Height</mat-label>
+            <input class="input" matInput type="number" placeholder="Height" formControlName="height">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
+            <mat-label>Weight</mat-label>
+            <input class="input" matInput type="number" placeholder="Weight" formControlName="weight">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
+            <mat-label>BMI</mat-label>
+            <input class="input" matInput type="number" placeholder="Body Mass Index" formControlName="bmi">
+          </mat-form-field>
+        </mat-card-content>
+
+        <mat-card-content *ngIf="showDrugs">
+          <app-chips-add [formCtrlName]="complaints" chipLabel="Complaints" [chipsList]="issuesList" [selectable]=true
+            [removable]=true [placeholder]="complaintsPlaceholder" [selectedChipsList]="finalComplaintsList">
+          </app-chips-add>
+
+          <app-chips-add [formCtrlName]="observations" chipLabel="Observations" [chipsList]="observationsList"
+            [selectable]=true [removable]=true [placeholder]="observationsPlaceholder"
+            [selectedChipsList]="finalObservationsList">
+          </app-chips-add>
+
+          <app-chips-add [formCtrlName]="diagnosis" chipLabel="Diagnosis" [chipsList]="diagnosisList" [selectable]=true
+            [removable]=true [placeholder]="diagnosisPlaceholder" [selectedChipsList]="finalDiagnosisList">
+          </app-chips-add>
+        </mat-card-content>
+
+        <mat-card-content formArrayName="prescriptions"
+          *ngFor="let drugElement of visitForm.get('prescriptions')['controls']; let i = index;">
+          <div [formGroupName]="i" *ngIf="showDrugs">
+            <app-select style="display: inline-block;" [selectLabel]="drugLabel" [options]="drugsList"
+              [selectedOption]="drugElement.value.drug" (result)="setListValue($event, i, 'drug')"></app-select>
+            <app-select style="display: inline-block;" [selectLabel]="timeRequirement" [options]="dose"
+              [selectedOption]="drugElement.value.dose" (result)="setListValue($event, i, 'dose')">
+            </app-select>
+            <app-select style="display: inline-block;" [selectLabel]="mealRequirement" [options]="duration"
+              [selectedOption]="drugElement.value.duration" (result)="setListValue($event, i, 'duration')">
+            </app-select>
+            <mat-form-field appearance="outline" style="width: 200px !important; padding: 5px !important;">
+              <mat-label>Additional Instructions</mat-label>
+              <input class="input" style="height: 30px !important; " matInput type="text" placeholder="Instructions"
+                formControlName="instructions" (input)="setListValue($event.target.value, i, 'instructions')">
+            </mat-form-field>
+
+            <span *ngIf="i > 0" (click)=removeDrug(i)
+              style="cursor: pointer; color: rgb(238, 22, 6); font-weight: bolder;">
+              <mat-icon style="vertical-align: middle;">delete</mat-icon> Remove Drug
+            </span>
+          </div>
+        </mat-card-content>
+        <div style="color: rgb(131, 190, 13);font-weight: bolder;
+          text-align: end; margin-right: 20px;">
+          <span style="cursor: pointer; " (click)="addDrug()">
+            <mat-icon style="vertical-align: middle;">add</mat-icon> Prescribe Drug
+          </span>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <mat-card-content>
+          <mat-label>Do you want to recommend any pathology test?</mat-label>
+          <mat-radio-group formControlName="pathology" (change)="radioChange($event, 'pathChips')">
+            <mat-radio-button value="Yes" #yes name="yes" required>Yes</mat-radio-button>
+            &nbsp;&nbsp;
+            <mat-radio-button value="No" #no name="no" required>No</mat-radio-button>
+          </mat-radio-group>
+          <app-chips-add *ngIf="showPathChips" [formCtrlName]="pathology" chipLabel="Pathology"
+            [chipsList]="pathologyList" [selectable]=true [removable]=true [placeholder]="pathologyPlaceholder"
+            [selectedChipsList]="finalPathologyList">
+          </app-chips-add>
+        </mat-card-content>
+        <mat-card-content>
+          <mat-label>Do you want to recommend any radiology test? &nbsp;</mat-label>
+          <mat-radio-group formControlName="radiology" (change)="radioChange($event, 'radioChips')">
+            <mat-radio-button value="Yes" #yes name="yes" required>Yes</mat-radio-button>
+            &nbsp;&nbsp;
+            <mat-radio-button value="No" #no name="no" required>No</mat-radio-button>
+          </mat-radio-group>
+          <app-chips-add *ngIf="showRadioChips" [formCtrlName]="radiology" chipLabel="Radiology"
+            [chipsList]="radiologyList" [selectable]=true [removable]=true [placeholder]="radiologyPlaceholder"
+            [selectedChipsList]="finalRadiologyList">
+          </app-chips-add>
+        </mat-card-content>
+
+        <mat-card-actions align="center">
+          <button mat-raised-button color="primary" [disabled]="!this.visitForm.valid || isFormInValid()">Update Prescription</button>
+          <button type="button" mat-raised-button color="warn" (click)="goToVisitDetails()">Back</button>
+        </mat-card-actions>
+      </form>
+    </div>
+    <mat-spinner *ngIf="loader"></mat-spinner>
+  </mat-card>
+</section>

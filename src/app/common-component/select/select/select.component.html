@@ -1,0 +1,16 @@
+<form class="select-form" flex="200" >
+  <mat-form-field class="widest" appearance="outline"  [formGroup]="form" >
+    <mat-label>{{selectLabel}}</mat-label>
+    <input #input type="text" style="height: 30px !important;     "
+           placeholder="Select"
+           aria-label="Number"
+           matInput
+           [formControl]="myControl"
+           [matAutocomplete]="auto" (keyup)="onChange($event.target.value)">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="selected($event)"  >
+      <mat-option *ngFor="let option of filteredOptions | async" id = "myText" [value]="option">
+        {{option}}
+      </mat-option>
+    </mat-autocomplete>
+  </mat-form-field>
+</form>

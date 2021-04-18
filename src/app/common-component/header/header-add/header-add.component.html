@@ -1,0 +1,62 @@
+<section class="parent">
+  <mat-card  class="mat-card" style="padding: 0%;">
+    <mat-card-title class="mat-card-title">
+      <img class="img-responsive" style="height: 76px; display: inline-block; vertical-align: bottom;"
+        src="./assets/images/Logo_Design_v1.0.png" alt="clinic logo" />
+      <div style="display: inline-block">
+        <ul class="nav navbar-nav">
+          <li>
+            <a routerLink="welcome" title="home page">
+              <mat-icon>home</mat-icon>
+              <span>Home</span>
+            </a>
+          </li>
+
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+              aria-expanded="false">
+              <mat-icon> person_pin</mat-icon>
+              Patients<span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a routerLink="/patients"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span>
+                    All</span></a></li>
+              <li><a routerLink="/patients/add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span>
+                    Add New</span></a>
+              </li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+              aria-expanded="false">
+              <mat-icon>collections</mat-icon>
+              Inventory<span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a [routerLink]="['/drugs']"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span>
+                    All</span></a>
+              </li>
+              <li><a routerLink="/drugs/add"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span> Add
+                    New</span></a></li>
+            </ul>
+          </li>
+          <li>
+            <a routerLink="/pathology" routerLinkActive="active" title="pathology">
+              <mat-icon>fingerprint</mat-icon>
+              <span>Pathology</span>
+            </a>
+          </li>
+          <li>
+            <a routerLink="/radiology" routerLinkActive="active" title="radiology">
+              <mat-icon>scanner</mat-icon>
+              <span>Radiology</span>
+            </a>
+          </li>
+
+        </ul>
+
+      </div>
+    </mat-card-title>
+  </mat-card>
+</section>
+<router-outlet></router-outlet>

@@ -1,0 +1,21 @@
+/* .example-form {
+  min-width: 150px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.example-full-width {
+  width: 100%;
+} */
+.select-form {
+  padding: 5px !important;
+}
+.widest {
+  width: 280px !important;
+}
+.wider {
+  width: 200px !important;
+}
+.wide {
+  width: 100px !important;
+}
