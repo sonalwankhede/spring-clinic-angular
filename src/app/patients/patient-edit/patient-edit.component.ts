@@ -47,8 +47,8 @@ export class PatientEditComponent implements OnInit {
   otherAllergiesList: string[] = [];
   caseList: string[] = [];
 
-  drugAllergies ='drugAllergies';
-  otherAllergies ='otherAllergies';
+  drugAllergies = 'drugAllergies';
+  otherAllergies = 'otherAllergies';
   history = 'history';
 
   constructor(private patientService: PatientService, private route: ActivatedRoute, private router: Router,
@@ -73,7 +73,7 @@ export class PatientEditComponent implements OnInit {
   ngOnInit() {
     const patientId = this.route.snapshot.params.id;
     forkJoin([this.commonService.getOtherAllergies(), this.commonService.getDrugAllergies(),
-      this.commonService.getKnownCase() ]).subscribe(
+    this.commonService.getKnownCase()]).subscribe(
       results => {
         this.separteOutStringFromObject(results[0], 'allergy', this.otherAllergiesList);
         this.separteOutStringFromObject(results[1], 'allergy', this.drugAllergiesList);
@@ -119,15 +119,65 @@ export class PatientEditComponent implements OnInit {
       },
       error => this.errorMessage = error as any
     );
+    this.addNewlyAddedKnownCases();
+    this.addNewlyAddedDrugAllergies();
+    this.addNewlyAddedOtherAllergies();
   }
-
+  addNewlyAddedKnownCases() {
+    const newlyAddedCases = this.finalCaseList.filter(x => !this.caseList.includes(x));
+    const casesAreNew = [];
+    for (let key in newlyAddedCases) {
+      const tempHistory = {};
+      tempHistory['issues'] = newlyAddedCases[key];
+      casesAreNew.push(tempHistory);
+    }
+    if (casesAreNew != null) {
+      this.commonService.addToComplaints(casesAreNew).subscribe(
+        newlyAdded => {
+        },
+        error => this.errorMessage = error as any
+      );
+    }
+  }
+  addNewlyAddedDrugAllergies() {
+    const newlyAddedDrugAllergies = this.finalDrugAllergiesList.filter(x => !this.drugAllergiesList.includes(x));
+    const drugAllergiesAreNew = [];
+    for (let key in newlyAddedDrugAllergies) {
+      const tempDrugAllergies = {};
+      tempDrugAllergies['allergy'] = newlyAddedDrugAllergies[key];
+      drugAllergiesAreNew.push(tempDrugAllergies);
+    }
+    if (drugAllergiesAreNew != null) {
+      this.commonService.addToDrugAllergies(drugAllergiesAreNew).subscribe(
+        newlyAdded => {
+        },
+        error => this.errorMessage = error as any
+      );
+    }
+  }
+  addNewlyAddedOtherAllergies() {
+    const newlyAddedOtherAllergies = this.finalOtherAllergiesList.filter(x => !this.otherAllergiesList.includes(x));
+    const otherAllergiesAreNew = [];
+    for (let key in newlyAddedOtherAllergies) {
+      const tempOtherAllergies = {};
+      tempOtherAllergies['allergy'] = newlyAddedOtherAllergies[key];
+      otherAllergiesAreNew.push(tempOtherAllergies);
+    }
+    if (otherAllergiesAreNew != null) {
+      this.commonService.addToOtherAllergies(otherAllergiesAreNew).subscribe(
+        newlyAdded => {
+        },
+        error => this.errorMessage = error as any
+      );
+    }
+  }
   gotoPatientDetail(patient: Patient) {
     this.router.navigate(['/patients', patient.id]);
   }
-  public redirectToAddVisit () {
+  public redirectToAddVisit() {
     this.router.navigate(['/patients', this.patient.id, 'visits', 'add']);
   }
-  public redirectToViewAllVisits () {
+  public redirectToViewAllVisits() {
     this.router.navigate(['/patients', this.patient.id, 'visits']);
   }
 }

@@ -1,8 +1,11 @@
 <section class="parent padding-top">
   <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center; ">
     <mat-card-title style="background-color: skyblue; text-align: center;">View All Patients</mat-card-title>
-    <div style="align-content: center;">
-      <table mat-table style="width: 100%; " *ngIf="showTable" class="mat-elevation-z8" [dataSource]="dataSource">
+    <div style="text-align: center;" *ngIf="patients.length === 0">No Patient Records Found.
+      <a (click)="addPatient()" style="cursor: pointer;"> Click to Add New Patient</a>.
+    </div>
+    <div style="align-content: center;" *ngIf="showTable && patients.length > 0">
+      <table mat-table style="width: 100%; " class="mat-elevation-z8" [dataSource]="dataSource">
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>
             <mat-form-field appearance="none">

@@ -2,3 +2,7 @@
  .chip-list {
     width: 100%;
   }
+.autocomplete {
+  overflow-y: scroll;
+  height: 150px !important;;
+}

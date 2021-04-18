@@ -36,31 +36,33 @@ import { ViewChild } from '@angular/core';
   templateUrl: './patient-list.component.html',
   styleUrls: ['./patient-list.component.css']
 })
-export class PatientListComponent implements OnInit, AfterViewInit  {
+export class PatientListComponent implements OnInit, AfterViewInit {
   errorMessage: string;
   patients: Patient[];
   dataSource = new MatTableDataSource<Patient>();
   showTable: boolean = false;
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
-  public displayedColumns = ['name', 'gender', 'age', 'address',  'telephone', 'update', 'delete'];
+  public displayedColumns = ['name', 'gender', 'age', 'address', 'telephone', 'update', 'delete'];
 
   dialogRef: MatDialogRef<ConfirmDialogComponent>;
 
   constructor(private router: Router, private patientService: PatientService,
     public dialog: MatDialog) {
+    this.patients = [];
   }
 
   ngOnInit() {
+    this.patients = [];
     this.patientService.getPatients().subscribe(
       patients => {
         this.patients = patients,
-        this.dataSource.data = patients as Patient[];
+          this.dataSource.data = patients as Patient[];
         error => this.errorMessage = error as any;
         this.showTable = true;
       });
-      this.dataSource.paginator = this.paginator;
+    this.dataSource.paginator = this.paginator;
   }
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -70,9 +72,9 @@ export class PatientListComponent implements OnInit, AfterViewInit  {
     this.patients.forEach(value => {
       ELEMENT_DATA.push(value);
     })
-    this.dataSource.data = ELEMENT_DATA;    
+    this.dataSource.data = ELEMENT_DATA;
   }
-  
+
   onSelect(patient: Patient) {
     this.router.navigate(['/patients', patient.id]);
   }

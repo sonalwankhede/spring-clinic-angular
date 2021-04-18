@@ -46,9 +46,11 @@ export class DrugListComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 
   constructor(private drugService: DrugService, private router: Router, public dialog: MatDialog) {
+    this.drugs = [];
   }
 
   ngOnInit() {
+    this.drugs = [];
     this.drugService.getDrugs().subscribe(
       drugs => {
         this.drugs = drugs,

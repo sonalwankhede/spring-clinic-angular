@@ -1,8 +1,12 @@
 <section class="parent padding-top">
-  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center; " *ngIf="showTable">
-    <mat-card-title style="background-color: skyblue; text-align: center;">All Visits For:: {{ patient.firstName }}
-      {{ patient.lastName }}</mat-card-title>
-    <div style="align-content: center;">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center; ">
+    <mat-card-title style="background-color: skyblue; text-align: center;">All Visits For:: <span *ngIf="showTable">{{
+        patient.firstName }}
+        {{ patient.lastName }}</span></mat-card-title>
+    <div style="text-align: center;" *ngIf="visits.length === 0">No Visit Records Found
+      <a (click)="addVisit()" style="cursor: pointer;"> Click to Add New Visit</a>.
+    </div>
+    <div style="align-content: center;" *ngIf="showTable && visits.length > 0">
       <table mat-table style="width: 100%; " class="mat-elevation-z8" [dataSource]="dataSource" matSort
         class="mat-elevation-z8">
         <hr>

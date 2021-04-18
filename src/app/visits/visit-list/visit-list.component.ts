@@ -84,6 +84,7 @@ export class VisitListComponent implements AfterViewInit {
   }
   loadPage() {
     this.patientId = this.route.snapshot.params.id;
+    this.visits = [];
     this.visitService.getVisitsByPatientId(this.patientId).subscribe(
       visits => {
         this.visits = visits,
@@ -111,7 +112,9 @@ export class VisitListComponent implements AfterViewInit {
   editVisit(visit: Visit) {
     this.router.navigate(['/visits', visit.id, 'edit']);
   }
-
+  addVisit() {
+    this.router.navigate(['/patients', this.patientId, 'visits', 'add']);
+  }
   deleteVisit(visit: Visit) {
     this.visitService.deleteVisit(visit.id.toString()).subscribe(
       response => {

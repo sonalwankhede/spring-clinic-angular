@@ -11,7 +11,7 @@
       (matChipInputTokenEnd)="add($event)" [required]="isMandatory">
   </mat-chip-list>
   <mat-hint *ngIf="isMandatory" align="end">Please select an appropriate option.</mat-hint>
-  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+  <mat-autocomplete class="autocomplete" #auto="matAutocomplete" (optionSelected)="selected($event)">
     <mat-option *ngFor="let chip of filteredChips | async" [value]="chip">
       {{chip}}
     </mat-option>

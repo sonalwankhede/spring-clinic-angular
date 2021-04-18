@@ -77,9 +77,6 @@ export class VisitAddComponent implements OnInit {
   showHealthIssues = false;
   showDrugs = false;
 
-  diagnosisNew: Diagnosis[];
-  tempDiagnosis: Diagnosis;
-
   drugsList = [];
   observationsList = [];
   pathologyList = [];
@@ -145,7 +142,7 @@ export class VisitAddComponent implements OnInit {
 
   @ViewChild('diagnosisInput', { static: true }) diagnosisInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
-  issuesList: string[];
+  complaintsList: string[];
   celsiusValue: number;
   observationsResponse: string[];
   showRadioChips: boolean = false;
@@ -167,7 +164,10 @@ export class VisitAddComponent implements OnInit {
     this.currentPatient = {} as Patient;
     this.description = [];
     this.diagnosisList = [];
-    this.issuesList = [];
+    this.complaintsList = [];
+    this.observationsList = [];
+    this.pathologyList = [];
+    this.radiologyList = [];
     this.formBuilder = new FormBuilder();
 
     this.visitForm = this.formBuilder.group({
@@ -260,22 +260,22 @@ export class VisitAddComponent implements OnInit {
     forkJoin([this.commonService.getDiagnosisDictionary(),
     this.commonService.getKnownCase(),
     this.commonService.getAllObservations(),
-    this.drugService.getDrugs(),
     this.commonService.getPathology(),
     this.commonService.getRadiology()]).subscribe(
       results => {
         this.separteOutStringFromObject(results[0], 'diagnosis', this.diagnosisList);
-        this.separteOutStringFromObject(results[1], 'issues', this.issuesList);
+        this.separteOutStringFromObject(results[1], 'issues', this.complaintsList);
         this.separteOutStringFromObject(results[2], 'observations', this.observationsList);
-        let result = results[3];
-        for (let key in result) {
-          delete result[key].id;
-          this.drugsList.push(Object.values(result[key]).join(' '));
-        }
-        this.separteOutStringFromObject(results[4], 'pathology', this.pathologyList);
-        this.separteOutStringFromObject(results[5], 'radiology', this.radiologyList);
+        this.separteOutStringFromObject(results[3], 'pathology', this.pathologyList);
+        this.separteOutStringFromObject(results[4], 'radiology', this.radiologyList);
         this.showDrugs = true;
       });
+    this.drugService.getDrugs().subscribe(result => {
+      for (let key in result) {
+        delete result[key].id;
+        this.drugsList.push(Object.values(result[key]).join(' '));
+      }
+    });
   }
 
   separteOutStringFromObject(resultList, field, arrayToBePushedTo) {
@@ -300,7 +300,7 @@ export class VisitAddComponent implements OnInit {
   addIssues(): void {
     for (let key in this.issuesResponse) {
       const value = this.issuesResponse[key];
-      this.issuesList.push(value['issues']);
+      this.complaintsList.push(value['issues']);
     }
     this.showHealthIssues = true;
   }
@@ -309,7 +309,6 @@ export class VisitAddComponent implements OnInit {
     visit.id = null;
     const that = this;
     visit.patient = this.currentPatient;
-    visit.visitDate = moment(visit.visitDate).format('YYYY/MM/DD');
     visit.diagnosis = this.finalDiagnosisList.toString();
     visit.complaints = this.finalComplaintsList.toString();
     visit.observations = this.finalObservationsList.toString();
@@ -334,15 +333,86 @@ export class VisitAddComponent implements OnInit {
       },
       error => this.errorMessage = error as any
     );
-    const newlyAddedDiagnosis = this.finalDiagnosisList.filter(x => !this.diagnosisList.includes(x));
-    this.diagnosisNew = [];
-    for (let key in newlyAddedDiagnosis) {
-      this.tempDiagnosis = {} as Diagnosis;
-      this.tempDiagnosis.diagnosis = newlyAddedDiagnosis[key];
-      this.diagnosisNew.push(this.tempDiagnosis);
+    this.addNewlyAddedDiagnosis();
+    this.addNewlyAddedObservations();
+    this.addNewlyAddedKnownCases();
+    this.addNewlyAddedPathology();
+    this.addNewlyAddedRadiology();
+  }
+  addNewlyAddedPathology() {
+    const newlyAddedPathologyScan = this.finalPathologyList.filter(x => !this.pathologyList.includes(x));
+    const scansAreNew = [];
+    for (let key in newlyAddedPathologyScan) {
+      const tempScan = {};
+      tempScan['pathology'] = newlyAddedPathologyScan[key];
+      scansAreNew.push(tempScan);
     }
-    if (this.diagnosisNew != null) {
-      this.commonService.addToDiagnosisDictionary(this.diagnosisNew).subscribe(
+    if (scansAreNew != null) {
+      this.commonService.addToComplaints(scansAreNew).subscribe(
+        newlyAdded => {
+        },
+        error => this.errorMessage = error as any
+      );
+    }
+  }
+  addNewlyAddedRadiology() {
+    const newlyAddedRadioscan = this.finalRadiologyList.filter(x => !this.radiologyList.includes(x));
+    const scansAreNew = [];
+    for (let key in newlyAddedRadioscan) {
+      const tempScan = {};
+      tempScan['radiology'] = newlyAddedRadioscan[key];
+      scansAreNew.push(tempScan);
+    }
+    if (scansAreNew != null) {
+      this.commonService.addToComplaints(scansAreNew).subscribe(
+        newlyAdded => {
+        },
+        error => this.errorMessage = error as any
+      );
+    }
+  }
+  addNewlyAddedKnownCases() {
+    const newlyAddedComplaints = this.finalComplaintsList.filter(x => !this.complaintsList.includes(x));
+    const complaintsAreNew = [];
+    for (let key in newlyAddedComplaints) {
+      const tempObservation = {};
+      tempObservation['issues'] = newlyAddedComplaints[key];
+      complaintsAreNew.push(tempObservation);
+    }
+    if (complaintsAreNew != null) {
+      this.commonService.addToComplaints(complaintsAreNew).subscribe(
+        newlyAdded => {
+        },
+        error => this.errorMessage = error as any
+      );
+    }
+  }
+  addNewlyAddedObservations() {
+    const newlyAddedObservations = this.finalObservationsList.filter(x => !this.observationsList.includes(x));
+    const observationsAreNew = [];
+    for (let key in newlyAddedObservations) {
+      const tempObservation = {};
+      tempObservation['observations'] = newlyAddedObservations[key];
+      observationsAreNew.push(tempObservation);
+    }
+    if (observationsAreNew != null) {
+      this.commonService.addToObservations(observationsAreNew).subscribe(
+        newlyAdded => {
+        },
+        error => this.errorMessage = error as any
+      );
+    }
+  }
+  addNewlyAddedDiagnosis() {
+    const newlyAddedDiagnosis = this.finalDiagnosisList.filter(x => !this.diagnosisList.includes(x));
+    const diagnosisNew = [];
+    for (let key in newlyAddedDiagnosis) {
+      const tempDiagnosis = {} as Diagnosis;
+      tempDiagnosis.diagnosis = newlyAddedDiagnosis[key];
+      diagnosisNew.push(tempDiagnosis);
+    }
+    if (diagnosisNew != null) {
+      this.commonService.addToDiagnosisDictionary(diagnosisNew).subscribe(
         newlyAdded => {
         },
         error => this.errorMessage = error as any

@@ -31,8 +31,7 @@ import { Allergy } from './allergies/allergy';
 
 @Injectable()
 export class CommonService {
-
-
+ 
   entityUrl = environment.REST_API_URL;
 
   private readonly handlerError: HandleError;
@@ -80,7 +79,34 @@ export class CommonService {
         )
       );
   }
-
+  addToObservations(observationsAreNew: any[]) {
+    return this.http.post<any[]>(environment.REST_API_URL + 'observations', observationsAreNew)
+    .pipe(
+      catchError(this.handlerError('addToObservations', observationsAreNew)
+      )
+    );
+  }
+  addToComplaints(complaintsAreNew: any[]) {
+    return this.http.post<any[]>(environment.REST_API_URL + 'knownCases', complaintsAreNew)
+    .pipe(
+      catchError(this.handlerError('addToComplaints', complaintsAreNew)
+      )
+    );
+  }
+  addToDrugAllergies(drugAllergiesAreNew: any[]) {
+    return this.http.post<any[]>(environment.REST_API_URL + 'drugAllergies', drugAllergiesAreNew)
+      .pipe(
+        catchError(this.handlerError('addToDrugAllergies', drugAllergiesAreNew)
+        )
+      );
+  }
+  addToOtherAllergies(otherAllergiesAreNew: any[]) {
+    return this.http.post<any[]>(environment.REST_API_URL + 'otherAllergies', otherAllergiesAreNew)
+      .pipe(
+        catchError(this.handlerError('addToOtherAllergies', otherAllergiesAreNew)
+        )
+      );
+  }
   getAllDrugs(): Observable<any[]> {
     return this.http.get<any[]>(environment.REST_API_URL + 'drugs/list')
       .pipe(
