@@ -170,8 +170,8 @@ export class VisitEditComponent implements OnInit {
       radiology: new FormControl('No', [])
     });
   }
-  isFormInValid(): boolean {
-    return this.prescriptionsArray[0].drug === ''
+  isFormInvalid(): boolean {
+    return this.prescriptionsArray[0] === undefined || this.prescriptionsArray[0].drug === ''
       || this.finalDiagnosisList.length === 0 || this.finalComplaintsList.length === 0 ||
       this.finalObservationsList.length === 0
   }
