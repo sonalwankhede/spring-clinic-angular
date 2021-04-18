@@ -323,6 +323,7 @@ export class VisitAddComponent implements OnInit {
     } else {
       visit.radiology = this.finalRadiologyList.toString();
     }
+    visit['prescriptions'] = [];
     visit['prescriptions'] = this.prescriptionsArray;
     this.loader = true;
     this.visitService.addVisit(visit).subscribe(

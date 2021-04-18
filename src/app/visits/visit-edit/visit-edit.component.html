@@ -4,14 +4,14 @@
       {{visit.patient.lastName}}</mat-card-title>
     <div style="align-content: center;">
 
-      <form [formGroup]="visitForm" autocomplete="off" novalidate (ngSubmit)="onSubmit(visitForm.value)"
+      <form *ngIf="!loader" [formGroup]="visitForm" autocomplete="off" novalidate (ngSubmit)="onSubmit(visitForm.value)"
         fxLayout="column wrap" fxLayoutAlign="center center" fxLayoutGap="10px">
         <mat-card-content style="text-align: end;">
           <mat-form-field appearance="none" style="text-align: end;">
             <input class="input" matInput [matDatepicker]="picker" placeholder="Patient Visit Date"
               formControlName="visitDate" id="visitDate" readonly>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker [startAt] = "visit.visitDate"></mat-datepicker>
+            <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
         </mat-card-content>
 

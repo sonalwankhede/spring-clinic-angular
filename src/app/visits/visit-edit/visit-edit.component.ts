@@ -41,7 +41,6 @@ export class VisitEditComponent implements OnInit {
 
   visit: Visit;
   currentPatient: Patient;
-  addedSuccess = false;
   errorMessage: string;
 
   description: string[];
@@ -236,28 +235,29 @@ export class VisitEditComponent implements OnInit {
       response => {
         this.visit = response;
         this.currentPatient = this.visit.patient;
+        forkJoin([this.commonService.getDiagnosisDictionary(),
+          this.commonService.getKnownCase(),
+          this.commonService.getAllObservations(),
+          this.drugService.getDrugs(),
+          this.commonService.getPathology(),
+          this.commonService.getRadiology()]).subscribe(
+            results => {
+              this.separteOutStringFromObject(results[0], 'diagnosis', this.diagnosisList);
+              this.separteOutStringFromObject(results[1], 'issues', this.issuesList);
+              this.separteOutStringFromObject(results[2], 'observations', this.observationsList);
+              let result = results[3];
+              for (let key in result) {
+                delete result[key].id;
+                this.drugsList.push(Object.values(result[key]).join(' '));
+              }
+              this.separteOutStringFromObject(results[4], 'pathology', this.pathologyList);
+              this.separteOutStringFromObject(results[5], 'radiology', this.radiologyList);
+              this.setFormValues();
+            });
         this.showVisitForm = true;
       },
       error => this.errorMessage = error as any);
-    forkJoin([this.commonService.getDiagnosisDictionary(),
-    this.commonService.getKnownCase(),
-    this.commonService.getAllObservations(),
-    this.drugService.getDrugs(),
-    this.commonService.getPathology(),
-    this.commonService.getRadiology()]).subscribe(
-      results => {
-        this.separteOutStringFromObject(results[0], 'diagnosis', this.diagnosisList);
-        this.separteOutStringFromObject(results[1], 'issues', this.issuesList);
-        this.separteOutStringFromObject(results[2], 'observations', this.observationsList);
-        let result = results[3];
-        for (let key in result) {
-          delete result[key].id;
-          this.drugsList.push(Object.values(result[key]).join(' '));
-        }
-        this.separteOutStringFromObject(results[4], 'pathology', this.pathologyList);
-        this.separteOutStringFromObject(results[5], 'radiology', this.radiologyList);
-        this.setFormValues();
-      });
+    
   }
   setFormValues() {
     this.visitForm.controls.visitDate.setValue(new Date(this.visit.visitDate));
@@ -341,7 +341,7 @@ export class VisitEditComponent implements OnInit {
     visit.id = null;
     const that = this;
     visit.patient = this.currentPatient;
-    visit.visitDate = moment(visit.visitDate).format('YYYY/MM/DD');
+    // visit.visitDate = moment(visit.visitDate).format('YYYY/MM/DD');
     visit.diagnosis = this.finalDiagnosisList.toString();
     visit.complaints = this.finalComplaintsList.toString();
     visit.observations = this.finalObservationsList.toString();
@@ -355,12 +355,12 @@ export class VisitEditComponent implements OnInit {
     } else {
       visit.radiology = this.finalRadiologyList.toString();
     }
+    visit['prescriptions'] = [];
     visit['prescriptions'] = this.prescriptionsArray;
     this.loader = true;
     this.visitService.updateVisit(this.visit.id.toString(), visit).subscribe(
       newVisit => {
-        this.visit = newVisit;
-        this.addedSuccess = true;
+        this.loader = false;
         this.goToVisitDetails();
       },
       error => this.errorMessage = error as any
