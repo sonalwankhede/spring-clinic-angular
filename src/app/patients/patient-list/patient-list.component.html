@@ -1,9 +1,10 @@
 <section class="parent padding-top">
-  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center; ">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center; min-width: 1288.41px">
     <mat-card-title style="background-color: skyblue; text-align: center;">View All Patients</mat-card-title>
     <div style="text-align: center;" *ngIf="patients.length === 0">No Patient Records Found.
       <a (click)="addPatient()" style="cursor: pointer;"> Click to Add New Patient</a>.
     </div>
+    <div *ngIf="!loader">
     <div style="align-content: center;" *ngIf="showTable && patients.length > 0">
       <table mat-table style="width: 100%; " class="mat-elevation-z8" [dataSource]="dataSource">
         <ng-container matColumnDef="name">
@@ -64,5 +65,8 @@
       <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons 
         [length]="dataSource.data.length" (page)="custom()" ></mat-paginator>
     </div>
+  </div>
+
+    <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
   </mat-card>
 </section>

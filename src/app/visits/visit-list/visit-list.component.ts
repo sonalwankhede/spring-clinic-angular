@@ -52,6 +52,7 @@ export class VisitListComponent implements AfterViewInit {
   dialogRef: MatDialogRef<ConfirmDialogComponent>;
   sortedData: Visit[];
   @ViewChild(MatSort, { static: true }) sort: MatSort;
+  loader: boolean;
 
   constructor(private router: Router, private route: ActivatedRoute, private visitService: VisitService,
     public dialog: MatDialog) {
@@ -139,7 +140,9 @@ export class VisitListComponent implements AfterViewInit {
     this.dialogRef.afterClosed().subscribe(dialogResult => {
       const result = dialogResult;
       if (result) {
+        this.loader = true;
         this.visitService.deleteVisit(visit.id.toString()).subscribe(res => {
+          this.loader = false;
           this.loadPage();
         });
       }

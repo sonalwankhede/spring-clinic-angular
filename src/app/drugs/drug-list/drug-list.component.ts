@@ -44,6 +44,7 @@ export class DrugListComponent implements OnInit, AfterViewInit {
   dialogRef: MatDialogRef<ConfirmDialogComponent>;
 
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  loader: boolean;
 
   constructor(private drugService: DrugService, private router: Router, public dialog: MatDialog) {
     this.drugs = [];
@@ -74,7 +75,9 @@ export class DrugListComponent implements OnInit, AfterViewInit {
     this.dialogRef.afterClosed().subscribe(dialogResult => {
       const result = dialogResult;
       if (result) {
+        this.loader = true;
         this.drugService.deleteDrug(drugId).subscribe(response => {
+          this.loader = false;
           this.ngOnInit();
         },
           error => this.errorMessage = error as any);

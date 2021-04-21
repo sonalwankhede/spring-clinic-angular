@@ -44,18 +44,8 @@ export class DrugEditComponent implements OnInit {
 
   formOfDrugs = 'formOfDrugs';
 
-  drugsForms = ['Syrup',
-    'Tablet',
-    'Capsule',
-    'Powder',
-    'Injectable',
-    'Cream',
-    'Gel',
-    'Lotion',
-    'Liquid',
-    'Inhaler',
-    'Raspules'];
-
+  drugsForms = ['Syp','Tab','Cap','Pow','Inj','Crm','Gel','Lot','Liq','Inh','Ras'];
+  
   formDropDown = "Form of Drug";
 
   constructor(private formBuilder: FormBuilder,

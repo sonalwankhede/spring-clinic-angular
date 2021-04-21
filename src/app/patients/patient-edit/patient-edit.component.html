@@ -31,16 +31,21 @@
             <mat-error *ngIf="hasError('lastName', 'maxlength')">You have more than 60 characters</mat-error>
           </mat-form-field>
           &nbsp;&nbsp;&nbsp;
-          
-        </mat-card-content>
-
-        <mat-card-content>
           <mat-radio-group formControlName="gender">
             <mat-radio-button value="Female" #female name="female" required>Female</mat-radio-button>
             &nbsp;&nbsp;
             <mat-radio-button value="Male" #male name="male" required>Male</mat-radio-button>
           </mat-radio-group>
-          &nbsp;&nbsp;
+        </mat-card-content>
+
+        <mat-card-content>
+          <mat-form-field appearance="none">
+            <input class="input" matInput [matDatepicker]="picker" placeholder="Patient's DoB"
+              formControlName="dob" id="dob" (dateChange)="calculateAge($event.target.value)">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          &nbsp;&nbsp;&nbsp;
           <mat-form-field style="width:130px !important;" appearance="outline">
             <mat-label>Age</mat-label>
             <input class="input" matInput type="number" min="0" placeholder="Patient's Age" formControlName="age"

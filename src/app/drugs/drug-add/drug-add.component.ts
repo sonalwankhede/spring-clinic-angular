@@ -55,17 +55,7 @@ export class DrugAddComponent implements OnInit {
     this.selectedForm = {} as string;
     this.drugsList = [];
     this.formBuilder = new FormBuilder();
-    this.drugsForms = ['Syrup',
-      'Tablet',
-      'Capsule',
-      'Powder',
-      'Injectable',
-      'Cream',
-      'Gel',
-      'Lotion',
-      'Liquid',
-      'Inhaler',
-      'Raspules'];
+    this.drugsForms = ['Syp','Tab','Cap','Pow','Inj','Crm','Gel','Lot','Liq','Inh','Ras'];
     this.drugForm = this.formBuilder.group({
       content: new FormControl('', [Validators.maxLength(60)]),
       brandName: new FormControl('', [Validators.required, Validators.maxLength(60)]),

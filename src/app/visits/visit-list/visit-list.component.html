@@ -1,102 +1,105 @@
 <section class="parent padding-top">
-  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center; ">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;min-width: 1288.41px">
     <mat-card-title style="background-color: skyblue; text-align: center;">All Visits For:: <span *ngIf="showTable">{{
         patient.firstName }}
         {{ patient.lastName }}</span></mat-card-title>
-    <div style="text-align: center;" *ngIf="visits.length === 0">No Visit Records Found
-      <a (click)="addVisit()" style="cursor: pointer;"> Click to Add New Visit</a>.
-    </div>
-    <div style="align-content: center;" *ngIf="showTable && visits.length > 0">
-      <table mat-table style="width: 100%; " class="mat-elevation-z8" [dataSource]="dataSource" matSort
-        class="mat-elevation-z8">
-        <hr>
-        <ng-container matColumnDef="visitDate">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Visit Date (dd/MM/yyyy) </th>
-          <td mat-cell *matCellDef="let element"> {{element.visitDate | date:'dd/MM/yyyy' }} </td>
-        </ng-container>
-        <ng-container matColumnDef="complaints">
-          <th mat-header-cell *matHeaderCellDef> Complaints </th>
-          <td mat-cell *matCellDef="let element"> {{ element.complaints }} </td>
-        </ng-container>
-        <ng-container matColumnDef="observations">
-          <th mat-header-cell *matHeaderCellDef> Observations </th>
-          <td mat-cell *matCellDef="let element"> {{ element.observations }} </td>
-        </ng-container>
-        <ng-container matColumnDef="diagnosis">
-          <th mat-header-cell *matHeaderCellDef> Diagnosis </th>
-          <td mat-cell *matCellDef="let element"> {{ element.diagnosis }} </td>
-        </ng-container>
-        <ng-container matColumnDef="temperature">
-          <th mat-header-cell *matHeaderCellDef> Temperature </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.temperature }}</td>
-        </ng-container>
-        <ng-container matColumnDef="pulse">
-          <th mat-header-cell *matHeaderCellDef> Pulse </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.pulse }}</td>
-        </ng-container>
-        <ng-container matColumnDef="spo2">
-          <th mat-header-cell *matHeaderCellDef> SpO2 </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.spo2 }}</td>
-        </ng-container>
-        <ng-container matColumnDef="respirationRate">
-          <th mat-header-cell *matHeaderCellDef> Respiration Rate </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.respirationRate }}</td>
-        </ng-container>
-        <ng-container matColumnDef="bloodPressure">
-          <th mat-header-cell *matHeaderCellDef> Blood Pressure </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.bloodPressure }}</td>
-        </ng-container>
-        <ng-container matColumnDef="height">
-          <th mat-header-cell *matHeaderCellDef> Height </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.height }}</td>
-        </ng-container>
-        <ng-container matColumnDef="weight">
-          <th mat-header-cell *matHeaderCellDef> Weight </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.weight }}</td>
-        </ng-container>
-        <ng-container matColumnDef="bmi">
-          <th mat-header-cell *matHeaderCellDef> BMI </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.bmi }}</td>
-        </ng-container>
-        <ng-container matColumnDef="radiology">
-          <th mat-header-cell *matHeaderCellDef> Radiology </th>
-          <td mat-cell *matCellDef="let element"> {{ element.radiology }} </td>
-        </ng-container>
-        <ng-container matColumnDef="pathology">
-          <th mat-header-cell *matHeaderCellDef> Pathology </th>
-          <td mat-cell *matCellDef="let element"> {{ element.pathology }} </td>
-        </ng-container>
+    <div *ngIf="!loader">
+      <div style="text-align: center;" *ngIf="visits.length === 0">No Visit Records Found
+        <a (click)="addVisit()" style="cursor: pointer;"> Click to Add New Visit</a>.
+      </div>
+      <div style="align-content: center;" [hidden]="!(showTable && visits.length > 0)">
+        <table mat-table style="width: 100%; " class="mat-elevation-z8" [dataSource]="dataSource" matSort
+          matSortStart="desc" class="mat-elevation-z8">
+          <hr>
+          <ng-container matColumnDef="visitDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Visit Date (dd/MM/yyyy) </th>
+            <td mat-cell *matCellDef="let element"> {{element.visitDate | date:'dd/MM/yyyy' }} </td>
+          </ng-container>
+          <ng-container matColumnDef="complaints">
+            <th mat-header-cell *matHeaderCellDef> Complaints </th>
+            <td mat-cell *matCellDef="let element"> {{ element.complaints }} </td>
+          </ng-container>
+          <ng-container matColumnDef="observations">
+            <th mat-header-cell *matHeaderCellDef> Observations </th>
+            <td mat-cell *matCellDef="let element"> {{ element.observations }} </td>
+          </ng-container>
+          <ng-container matColumnDef="diagnosis">
+            <th mat-header-cell *matHeaderCellDef> Diagnosis </th>
+            <td mat-cell *matCellDef="let element"> {{ element.diagnosis }} </td>
+          </ng-container>
+          <ng-container matColumnDef="temperature">
+            <th mat-header-cell *matHeaderCellDef> Temperature </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.temperature }}</td>
+          </ng-container>
+          <ng-container matColumnDef="pulse">
+            <th mat-header-cell *matHeaderCellDef> Pulse </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.pulse }}</td>
+          </ng-container>
+          <ng-container matColumnDef="spo2">
+            <th mat-header-cell *matHeaderCellDef> SpO2 </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.spo2 }}</td>
+          </ng-container>
+          <ng-container matColumnDef="respirationRate">
+            <th mat-header-cell *matHeaderCellDef> Respiration Rate </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.respirationRate }}</td>
+          </ng-container>
+          <ng-container matColumnDef="bloodPressure">
+            <th mat-header-cell *matHeaderCellDef> Blood Pressure </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.bloodPressure }}</td>
+          </ng-container>
+          <ng-container matColumnDef="height">
+            <th mat-header-cell *matHeaderCellDef> Height </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.height }}</td>
+          </ng-container>
+          <ng-container matColumnDef="weight">
+            <th mat-header-cell *matHeaderCellDef> Weight </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.weight }}</td>
+          </ng-container>
+          <ng-container matColumnDef="bmi">
+            <th mat-header-cell *matHeaderCellDef> BMI </th>
+            <td mat-cell *matCellDef="let element">
+              {{ element.bmi }}</td>
+          </ng-container>
+          <ng-container matColumnDef="radiology">
+            <th mat-header-cell *matHeaderCellDef> Radiology </th>
+            <td mat-cell *matCellDef="let element"> {{ element.radiology }} </td>
+          </ng-container>
+          <ng-container matColumnDef="pathology">
+            <th mat-header-cell *matHeaderCellDef> Pathology </th>
+            <td mat-cell *matCellDef="let element"> {{ element.pathology }} </td>
+          </ng-container>
 
-        <ng-container matColumnDef="viewVisitDetails">
-          <th mat-header-cell *matHeaderCellDef> View Prescription</th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="accent" (click)="redirectVisitDetail(element)">
-              <mat-icon class="mat-18">chrome_reader_mode</mat-icon>
-            </button>
-          </td>
-        </ng-container>
+          <ng-container matColumnDef="viewVisitDetails">
+            <th mat-header-cell *matHeaderCellDef> View Prescription</th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="accent" (click)="redirectVisitDetail(element)">
+                <mat-icon class="mat-18">chrome_reader_mode</mat-icon>
+              </button>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="delete">
-          <th mat-header-cell *matHeaderCellDef> Delete </th>
-          <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="warn" (click)="redirectToDelete(element)">
-              <mat-icon class="mat-18">delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons [length]="dataSource.data.length"
-        (page)="custom()"></mat-paginator>
+          <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef> Delete </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="warn" (click)="redirectToDelete(element)">
+                <mat-icon class="mat-18">delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons [length]="dataSource.data.length"
+          (page)="custom()"></mat-paginator>
+      </div>
     </div>
+    <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
   </mat-card>
 </section>

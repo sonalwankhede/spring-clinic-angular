@@ -35,6 +35,7 @@ export class VisitDetailComponent implements OnInit {
     'otherAllergies', 'vitals', 'complaints', 'observations', 'diagnosis', 'drug', 'dose', 'duration', 'instructions'];
   showTable: boolean = false;
   visitdate: string;
+  loader: boolean;
 
   constructor(private visitService: VisitService, private route: ActivatedRoute, private router: Router, public datepipe: DatePipe) {
     this.visit = {} as Visit;
@@ -46,6 +47,9 @@ export class VisitDetailComponent implements OnInit {
       response => {
         this.visit = response;
         this.prescription = this.visit['prescription'];
+        this.prescription.sort(function(a, b) {
+          return a.serialNumber - b.serialNumber;
+        });
         this.currentPatient = this.visit.patient;
         this.dataSourceVisit.data = this.visit as unknown as Visit[];
         this.showTable = true;
@@ -57,11 +61,33 @@ export class VisitDetailComponent implements OnInit {
   exportTable() {
     PrescriptionUtil.exportToPdf("pdfTable");
   }
+  getBmiValue() {
+    if (this.visit.bmi < 18.5) {
+      return 'Under Weight';
+    } else if (this.visit.bmi >= 18.5 && this.visit.bmi <= 24) {
+      return 'Healthy Weight';
+    } else if (this.visit.bmi > 24 && this.visit.bmi <= 29.9) {
+      return 'Over Weight';
+    } else if (this.visit.bmi > 30) {
+      if (this.visit.bmi > 30 && this.visit.bmi <= 34.99) {
+        return 'Obese Class I';
+      } else if (this.visit.bmi >= 35 && this.visit.bmi <= 39.99) {
+        return 'Obese Class II';
+      } else if (this.visit.bmi >= 40) {
+        return 'Obese Class III';
+      }
+    }
+  }
   goToEdit() {
     this.router.navigate(['/patients', this.visit.patient.id, 'visits', this.visit.id, 'edit']);
   }
+  goToPatient() {
+    this.router.navigate(['/patients', this.visit.patient.id, 'edit']);
+  }
   public SavePDF(): void {
 
+    this.showTable = false;
+    this.loader = true;
     let DATA = document.getElementById('htmlData');
 
     html2canvas(DATA).then(canvas => {
@@ -72,8 +98,10 @@ export class VisitDetailComponent implements OnInit {
       const FILEURI = canvas.toDataURL('image/png')
       let PDF = new jsPDF('p', 'in', [510, 737]);
       let position = 0;
-      PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight)
+      PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight, 'alias', 'SLOW')
       PDF.save((this.currentPatient.firstName + '_' + this.currentPatient.lastName + '_' + this.visitdate +'.pdf').replace(/   /g,'_'));
+      this.showTable = true;
+      this.loader = false;
     });
   }
 }

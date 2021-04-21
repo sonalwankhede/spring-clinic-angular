@@ -40,6 +40,7 @@ import { FormArray } from '@angular/forms';
 
 
 export class PrescriptedDrugs {
+  serialNumber: number;
   drug: string;
   dose: string;
   duration: string;
@@ -112,8 +113,20 @@ export class VisitAddComponent implements OnInit {
     '1-1-1',
     '0-0-1',
     '1-1-0',
-    '1-0-0'
-  ];
+    '1-0-0',
+    '1/2-1/2-1/2',
+    '1/2-1/2-0',
+    '1/2-0-0',
+    '1/2-0-1/2',
+    '0-1/2-1/2',
+    '0-0-1/2',
+    '1/4-1/4-1/4',
+    '1/4-1/4-0',
+    '1/4-0-0',
+    '1/4-0-1/4',
+    '0-1/4-1/4',
+    '0-0-1/4'
+    ];
 
   duration = [
     'Before Meal',
@@ -147,6 +160,11 @@ export class VisitAddComponent implements OnInit {
   observationsResponse: string[];
   showRadioChips: boolean = false;
   showPathChips: boolean = false;
+  height: number = 0;
+  weight: number = 0;
+  bmi: number;
+  bmiColor: string;
+  bmiHint: string;
 
   constructor(private visitService: VisitService, private patientService: PatientService,
     private commonService: CommonService, private drugService: DrugService,
@@ -154,6 +172,7 @@ export class VisitAddComponent implements OnInit {
     this.loader = false;
     this.prescriptionsArray = [
       {
+        serialNumber: 0,
         drug: '',
         duration: '',
         dose: '',
@@ -179,7 +198,7 @@ export class VisitAddComponent implements OnInit {
       bloodPressure: new FormControl('', []),
       height: new FormControl('', []),
       weight: new FormControl('', []),
-      bmi: new FormControl('', []),
+      bmi: new FormControl({value: '', disabled: true}, []),
       complaints: new FormControl('', []),
       observations: new FormControl('', []),
       diagnosis: new FormControl('', []),
@@ -195,6 +214,7 @@ export class VisitAddComponent implements OnInit {
   }
   createDrugArray(): any {
     return this.formBuilder.group({
+      serialNumber: new FormControl('', []),
       drug: new FormControl('', []),
       duration: new FormControl('', []),
       dose: new FormControl('', []),
@@ -212,10 +232,13 @@ export class VisitAddComponent implements OnInit {
   setListValue(event, i, fieldName) {
     this.prescriptionsArray[i] ? this.prescriptionsArray[i][fieldName] = event
       : this.prescriptionsArray[i] = this.getPrescriptionObject(), this.prescriptionsArray[i][fieldName] = event;
+    if (fieldName !== 'serialNumber' && this.prescriptionsArray[i].serialNumber === 0) {
+      this.prescriptionsArray[i].serialNumber = i + 1;
+    }
   }
-
   private getPrescriptionObject(): PrescriptedDrugs {
     return {
+      serialNumber: 0,
       drug: '',
       duration: '',
       dose: '',
@@ -271,13 +294,49 @@ export class VisitAddComponent implements OnInit {
         this.showDrugs = true;
       });
     this.drugService.getDrugs().subscribe(result => {
-      for (let key in result) {
-        delete result[key].id;
-        this.drugsList.push(Object.values(result[key]).join(' '));
+      for (let obj of result) {
+        delete obj.id;
+        this.drugsList.push(obj.formOfDrugs.substring(0, 3) + '. ' + obj.brandName + ' (' + obj.content + ') ' + obj.strength);
       }
     });
   }
-
+  calculateBmi(value, field) {
+    if (field === 'height') {
+      this.height = value;
+    }
+    if (field === 'weight') {
+      this.weight = value;
+    }
+    if (this.weight !== 0 && this.height !== 0) {
+      var multiplier = Math.pow(10, 1 || 0);
+      this.bmi = Math.round((this.weight / ((this.height * 0.01) * (this.height * 0.01))) * multiplier) / multiplier;
+      this.visitForm.controls.bmi.setValue(this.bmi);
+      this.getBmiValue();
+    }
+  }
+  getBmiValue() {
+    if (this.bmi < 18.5) {
+      this.bmiColor = "#ffe400";
+      this.bmiHint = 'Under Weight';
+    } else if (this.bmi >= 18.5 && this.bmi <= 24) {
+      this.bmiColor = "green";
+      this.bmiHint = 'Healthy Weight';
+    } else if (this.bmi > 24 && this.bmi <= 29.9) {
+      this.bmiColor = "#ffe400";
+      this.bmiHint = 'Over Weight';
+    } else if (this.bmi > 30) {
+      if (this.bmi > 30 && this.bmi <= 34.99) {
+        this.bmiColor = "#ca5353";
+        this.bmiHint = 'Obese Class I';
+      } else if (this.bmi >= 35 && this.bmi <= 39.99) {
+        this.bmiColor = "#b90606";
+        this.bmiHint = 'Obese Class II';
+      } else if (this.bmi >= 40) {
+        this.bmiColor = "#8a0101";
+        this.bmiHint = 'Obese Class III';
+      }
+    }
+  }
   separteOutStringFromObject(resultList, field, arrayToBePushedTo) {
     for (let key in resultList) {
       arrayToBePushedTo.push(resultList[key][field]);
@@ -307,8 +366,12 @@ export class VisitAddComponent implements OnInit {
 
   onSubmit(visit: Visit) {
     visit.id = null;
-    const that = this;
     visit.patient = this.currentPatient;
+    if (this.bmi !== 0) {
+      visit.bmi = this.bmi;
+    } else {
+      visit.bmi = null;
+    }
     visit.diagnosis = this.finalDiagnosisList.toString();
     visit.complaints = this.finalComplaintsList.toString();
     visit.observations = this.finalObservationsList.toString();

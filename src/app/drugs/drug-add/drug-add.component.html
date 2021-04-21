@@ -46,11 +46,11 @@
           <a download href="assets/templates/add_new_drug.xlsx">Download Template</a>
           <button mat-raised-button color="primary" [disabled]="!drugForm.valid">Create</button>
           <button type="button" mat-raised-button color="warn" (click)="onCancel()">Cancel</button>
-          <input type="file" class="form-control" (change)="uploadedFile($event)" placeholder="Upload file"
-            accept=".xlsx">
         </mat-card-actions>
+        <input type="file" class="form-control" (change)="uploadedFile($event)" placeholder="Upload file"
+            accept=".xlsx">
       </form>
-      <mat-spinner *ngIf="loader"></mat-spinner>
+      <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
     </div>
   </mat-card>
 </section>

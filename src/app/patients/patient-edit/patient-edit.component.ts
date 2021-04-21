@@ -62,6 +62,7 @@ export class PatientEditComponent implements OnInit {
       address: new FormControl('', [Validators.maxLength(100)]),
       city: new FormControl('', [Validators.maxLength(100)]),
       gender: new FormControl('', [Validators.required]),
+      dob: new FormControl(new Date(), []),
       telephone: new FormControl('', []),
       age: new FormControl('', [Validators.required, Validators.min(0)]),
       drugAllergies: new FormControl('', []),
@@ -100,6 +101,12 @@ export class PatientEditComponent implements OnInit {
   separteOutStringFromObject(resultList, field, arrayToBePushedTo) {
     for (let key in resultList) {
       arrayToBePushedTo.push(resultList[key][field]);
+    }
+  }
+  calculateAge(value) {
+    if (value) {
+      var timeDiff = Math.abs(Date.now() - value);
+      this.patientForm.controls.age.setValue(Math.floor((timeDiff / (1000 * 3600 * 24)) / 365));
     }
   }
   public hasError = (controlName: string, errorName: string) => {

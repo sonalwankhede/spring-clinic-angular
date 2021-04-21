@@ -1,5 +1,5 @@
 <section class="parent padding-top">
-  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;" *ngIf="showVisitForm">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;min-width: 1288.41px" *ngIf="showVisitForm">
     <mat-card-title style="background-color: skyblue; ">Add a New Visit For :: {{visit.patient.firstName}}
       {{visit.patient.lastName}}</mat-card-title>
     <div style="align-content: center;" *ngIf="!loader">
@@ -16,47 +16,50 @@
 
         <mat-card-content>
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
-            <mat-label>Temparature (F)</mat-label>
+            <mat-label>Temparature (°F)</mat-label>
             <input class="input" matInput type="number" placeholder="Temperature" formControlName="temperature">
             <mat-hint align="end">Temparature is madatory.</mat-hint>
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
-            <mat-label>Pulse</mat-label>
+            <mat-label>Pulse (bpm)</mat-label>
             <input class="input" matInput type="number" placeholder="Pulse" formControlName="pulse">
             <mat-hint align="end">Pulse is madatory.</mat-hint>
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
-            <mat-label>SpO2</mat-label>
+            <mat-label>SpO2 (%)</mat-label>
             <input class="input" matInput type="number" placeholder="SpO2" formControlName="spo2">
             <mat-hint align="end">SpO2 is madatory.</mat-hint>
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
-            <mat-label>Respiration rate</mat-label>
+            <mat-label>Brpm</mat-label>
             <input class="input" matInput type="number" placeholder="Respiration Rate"
               formControlName="respirationRate">
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
-            <mat-label>Blood Pressure</mat-label>
-            <input class="input" matInput type="number" placeholder="Blood Pressure" formControlName="bloodPressure">
+            <mat-label>BP (mmHg)</mat-label>
+            <input class="input" matInput type="text" placeholder="Blood Pressure" formControlName="bloodPressure">
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
-            <mat-label>Height</mat-label>
-            <input class="input" matInput type="number" placeholder="Height" formControlName="height">
+            <mat-label>Height (cms)</mat-label>
+            <input class="input" matInput type="number" placeholder="Height" formControlName="height"
+            (keyup)="calculateBmi($event.target.value, 'height')" (change)="calculateBmi($event.target.value, 'height')" >
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
-            <mat-label>Weight</mat-label>
-            <input class="input" matInput type="number" placeholder="Weight" formControlName="weight">
+            <mat-label>Weight (kg)</mat-label>
+            <input class="input" matInput type="number" placeholder="Weight" formControlName="weight"
+            (keyup)="calculateBmi($event.target.value, 'weight')" (change)="calculateBmi($event.target.value, 'weight')">
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
-            <mat-label>BMI</mat-label>
+            <mat-label>BMI (kg/m<sup>2</sup>)</mat-label>
             <input class="input" matInput type="number" placeholder="Body Mass Index" formControlName="bmi">
+            <mat-hint align="end" *ngIf="bmi > 0" class="bmi-message" [ngStyle]="{'background': bmiColor}">{{bmiHint}}</mat-hint>
           </mat-form-field>
         </mat-card-content>
 
@@ -65,12 +68,12 @@
             [removable]=true [placeholder]="complaintsPlaceholder" [selectedChipsList]="finalComplaintsList">
           </app-chips-add>
 
-          <app-chips-add [formCtrlName]="observations" chipLabel="Observations" [chipsList]="observationsList"
+          <app-chips-add [formCtrlName]="observations" chipLabel="Examination" [chipsList]="observationsList"
             [selectable]=true [removable]=true [placeholder]="observationsPlaceholder"
             [selectedChipsList]="finalObservationsList">
           </app-chips-add>
 
-          <app-chips-add [formCtrlName]="diagnosis" chipLabel="Diagnosis" [chipsList]="diagnosisList" [selectable]=true
+          <app-chips-add [formCtrlName]="diagnosis" chipLabel="Preliminary Diagnosis" [chipsList]="diagnosisList" [selectable]=true
             [removable]=true [placeholder]="diagnosisPlaceholder" [selectedChipsList]="finalDiagnosisList">
           </app-chips-add>
         </mat-card-content>
@@ -78,7 +81,11 @@
         <mat-card-content formArrayName="prescriptions"
           *ngFor="let drug of visitForm.get('prescriptions')['controls']; let i = index;">
           <div [formGroupName]="i" *ngIf="showDrugs">
-
+            <mat-form-field appearance="outline" style="width: 65px !important; margin: 5px !important;">
+              <mat-label>No.</mat-label>
+              <input class="input" matInput type="number" placeholder="Serial Number" value="{{i + 1}}"
+              (keyup)="setListValue($event.target.value, i, 'serialNumber')" (change)="setListValue($event.target.value, i, 'serialNumber')">
+            </mat-form-field>
             <app-select style="display: inline-block;" [selectLabel]="drugLabel" [options]="drugsList"
               [selectedOption]="selectedDrug" (result)="setListValue($event, i, 'drug')"></app-select>
             <app-select style="display: inline-block;" [selectLabel]="timeRequirement" [options]="dose"
@@ -100,9 +107,9 @@
           </div>
         </mat-card-content>
         <div style="color: rgb(131, 190, 13);font-weight: bolder;
-          text-align: end; margin-right: 20px;">
+          text-align: end;">
           <span style="cursor: pointer; " (click)="addDrug()">
-            <mat-icon style="vertical-align: middle;">add</mat-icon> Prescribe Drug
+            <mat-icon style="vertical-align: bottom;">add</mat-icon> Prescribe Drug
           </span>
         </div>
         <br>
@@ -140,6 +147,6 @@
         </mat-card-actions>
       </form>
     </div>
-    <mat-spinner *ngIf="loader"></mat-spinner>
+    <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
   </mat-card>
 </section>

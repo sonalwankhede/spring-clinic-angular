@@ -3,11 +3,16 @@
   justify-content: center;
   align-items: center;
 }
-.export-container {
-  text-align: right;
+.container-to-right {
   margin-bottom: 20px;
+  display: inline-block;
+  margin-left: 453px;
+  
 }
-
+.container-to-left {
+  margin-bottom: 20px;
+  display: inline-block;
+}
 table {
   width: 100%;
 }
@@ -37,10 +42,14 @@ mat-form-field.mat-form-field-should-float label {
   height: 25cm; 
 }
 .th-td {
-  border: 1px dotted black;
+  border: 0.1px dotted black;
   border-collapse: collapse;
   padding: 5px;
-  text-align: left;    
+  text-align: left;  
+  font-weight: 550 !important;  
+}
+.table-header {
+  font-weight: 550 !important;  
 }
 table.center {
   margin-left: auto;

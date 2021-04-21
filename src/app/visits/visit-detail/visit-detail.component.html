@@ -1,29 +1,34 @@
 <section class="parent padding-top main-div">
   <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;width: 973.576px; " class="margin-bottom">
     <mat-card-title style="background-color: skyblue; text-align: center;">View Prescription</mat-card-title>
-
-    <div class="export-container">
-      <button mat-raised-button color="primary" (click)="SavePDF()">Export</button>
-      <button mat-raised-button color="primary" (click)="goToEdit()">Edit</button>
+    <div>
+      <div class="container-to-left">
+        <button mat-raised-button color="primary" style="margin: 10px;" (click)="goToPatient()"><mat-icon>edit</mat-icon> Edit Patient Data</button>
+      </div>
+    <div class="container-to-right">
+      <button mat-raised-button style="background-color: rgb(240, 127, 46); color: white;margin: 10px;" (click)="goToEdit()"><mat-icon>edit</mat-icon> Edit Prescription</button>
+      <button mat-raised-button style="background-color: forestgreen; color: white;margin: 10px;" (click)="SavePDF()"><mat-icon>picture_as_pdf</mat-icon> Export</button>
     </div>
-
+  </div>
+    <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
     <div id="htmlData" *ngIf="showTable" style="padding: 62px; margin: 62px; padding-right: 20px; margin-right: 20px;"
       fxLayout="column wrap" fxLayoutAlign="center center" fxLayoutGap="10px">
-
       <div style="padding-top: 20px; padding-left: 30px;">
         <table class="center">
           <tr>
             <!-- Name Column -->
-            <th style="width: 60%;font-size: 18px; padding-left: 50px; padding-top: 9px;padding-bottom: 9px;">
-              {{currentPatient.firstName }} {{
+            <th class="table-header"
+              style="width: 60%;font-size: 18px; padding-left: 50px; padding-top: 9px;padding-bottom: 9px;">
+              {{currentPatient.firstName }} {{currentPatient.middleName}} {{
               currentPatient.lastName}} </th>
             <!-- gender Column -->
-            <th style="font-size: 18px;text-align: end; padding-top: 9px;padding-bottom: 9px;"> {{visit.patient.gender}}
+            <th class="table-header" style="font-size: 18px; text-align: end; padding-top: 9px;padding-bottom: 9px;">
+              {{visit.patient.gender}}
             </th>
             <table>
-              <tr style="font-size: 18px; font-weight: bolder; text-align: end; white-space: pre; "> {{visitdate}}
+              <tr style="font-size: 18px; font-weight: 550px; text-align: end; white-space: pre; "> {{visitdate}}
                 &nbsp; &nbsp; &nbsp; </tr>
-              <tr style="font-size: 18px;font-weight: bolder; text-align: end;"> {{visit.patient.age}} &nbsp;&nbsp;
+              <tr style="font-size: 18px;font-weight: bo550pxlder; text-align: end;"> {{visit.patient.age}} &nbsp;&nbsp;
                 &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; </tr>
 
             </table>
@@ -37,105 +42,97 @@
           <br>
           <!-- history Column -->
           <tr>
-            <th style="padding-left: 20px;"> Known Case Of </th>
+            <th style="padding-left: 20px;" class="table-header"> Known Case Of </th>
             <td>:- {{visit.patient.history}} </td>
           </tr>
           <br>
           <tr>
             <!-- Drug Allergies Column -->
-            <th style="padding-left: 20px;"> Drug Allergies </th>
+            <th style="padding-left: 20px;" class="table-header"> Drug Allergies </th>
             <td>:- {{visit.patient.drugAllergies}} </td>
           </tr>
           <br>
           <tr>
-            <th style="padding-left: 20px;"> Other Allergies </th>
+            <th style="padding-left: 20px;" class="table-header"> Other Allergies </th>
             <td>:- {{visit.patient.otherAllergies}} </td>
           </tr>
           <br>
           <tr>
-            <th style="padding-left: 20px;"> Vitals </th>
-            <td>
-              <table style="width:100%; border: 1px dotted black;
-            border-collapse: collapse;" class="th-td center">
-                <tr>
-                  <th class="th-td"> Temperature </th>
-                  <th class="th-td"> Pulse </th>
-                  <th class="th-td"> SpO2 </th>
-                  <th class="th-td"> Respiration Rate </th>
-                  <th class="th-td"> Blood Pressure </th>
-                  <th class="th-td"> Height </th>
-                  <th class="th-td"> Weight </th>
-                  <th class="th-td"> BMI </th>
-
-                </tr>
-                <tr class="th-td">
-                  <td class="th-td">{{visit.temperature}}</td>
-                  <td class="th-td">{{visit.pulse}}</td>
-                  <td class="th-td">{{visit.spo2}}</td>
-                  <td class="th-td">{{visit.respirationRate}}</td>
-                  <td class="th-td">{{visit.bloodPressure}}</td>
-                  <td class="th-td">{{visit.height}}</td>
-                  <td class="th-td">{{visit.weight}}</td>
-                  <td class="th-td">{{visit.bmi}}</td>
-
-                </tr>
-
-              </table>
-
-            </td>
-          </tr>
-          <br>
-          <tr>
-            <th style="padding-left: 20px;"> Complaints </th>
+            <th style="padding-left: 20px;" class="table-header"> Complaints </th>
             <td>:- {{visit.complaints.toString()}}</td>
           </tr>
           <br>
           <tr>
-            <th style="padding-left: 20px;"> Examination </th>
+            <th style="padding-left: 20px;" class="table-header"> Vitals </th>
+            <td>
+              <table style="width:100%; border: 0.5px dotted black;
+            border-collapse: collapse;font-size: 12px;" class="th-td center">
+                <tr>
+                  <th class="th-td"> Temp (°F) </th>
+                  <th class="th-td"> Pulse (bpm)</th>
+                  <th class="th-td"> SpO2 (%)</th>
+                  <th class="th-td"> Brpm </th>
+                  <th class="th-td"> BP (mmHg)</th>
+                  <th class="th-td"> Ht (cms)</th>
+                  <th class="th-td"> Wt (kg)</th>
+                  <th class="th-td"> BMI (kg/m<sup>2</sup>)</th>
+                </tr>
+                <tr class="th-td">
+                  <td class="th-td" style="font-weight: 400;">{{visit.temperature}}</td>
+                  <td class="th-td" style="font-weight: 400;">{{visit.pulse}}</td>
+                  <td class="th-td" style="font-weight: 400;">{{visit.spo2}}</td>
+                  <td class="th-td" style="font-weight: 400;">{{visit.respirationRate}}</td>
+                  <td class="th-td" style="font-weight: 400;">{{visit.bloodPressure}}</td>
+                  <td class="th-td" style="font-weight: 400;">{{visit.height}}</td>
+                  <td class="th-td" style="font-weight: 400;">{{visit.weight}}</td>
+                  <td class="th-td" style="font-weight: 400;">{{visit.bmi}} <span *ngIf="visit.bmi" style="font-size: 8px;">{{getBmiValue()}}</span></td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <br>
+          <tr>
+            <th style="padding-left: 20px;" class="table-header"> Examination </th>
             <td>:- {{visit.observations.toString()}}</td>
           </tr>
           <br>
           <tr>
-            <th style="padding-left: 20px;"> Diagnosis </th>
+            <th style="padding-left: 20px;" class="table-header"> Preliminary Diagnosis </th>
             <td>:- {{visit.diagnosis.toString()}}</td>
           </tr>
         </table>
       </div>
       <br>
       <div style="padding-left: 80px;">
-        <p style="color: black; font-family: cursive;"><b><i>Rx</i></b></p>
-        <table style="width:100%; border: 1px dotted black;
+        <p style="color: black; font-family: cursive; font-weight: 400;">&nbsp; <i>Rx</i></p>
+        <br>
+        <table style="width:100%; border: 0.1px dotted #c5c1c1;
           border-collapse: collapse;" class="th-td center">
           <tr>
             <th class="th-td"> Drug </th>
             <th class="th-td"> Dose </th>
-            <th class="th-td"> Duration </th>
             <th class="th-td"> Instructions </th>
-
+            <th class="th-td"> Course Duration </th>
           </tr>
           <tr *ngFor="let drug of prescription" class="th-td">
-            <td class="th-td"> {{drug['drug'].toString()}}</td>
-
-            <td class="th-td"> {{drug['dose'].toString()}}</td>
-
-            <td class="th-td"> {{drug['duration'].toString()}}</td>
-
-            <td class="th-td"> {{drug['instructions'].toString()}}</td>
+            <td class="th-td" style="font-weight: 400;"> {{drug['drug'].toString()}}</td>
+            <td class="th-td" style="font-weight: 400;"> {{drug['dose'].toString()}}</td>
+            <td class="th-td" style="font-weight: 400;"> {{drug['duration'].toString()}}</td>
+            <td class="th-td" style="font-weight: 400;"> {{drug['instructions'].toString()}}</td>
           </tr>
         </table>
       </div>
       <br>
       <div style="padding-left: 80px;">
         <tr>
-          <th>Recommended Tests</th>
+          <th class="table-header">Recommended Tests</th>
           <td>:- {{visit.pathology}} </td>
         </tr>
         <tr>
-          <th>Recommended Scans</th>
+          <th class="table-header">Recommended Scans</th>
           <td>:- {{visit.radiology}} </td>
         </tr>
       </div>
     </div>
   </mat-card>
-
 </section>

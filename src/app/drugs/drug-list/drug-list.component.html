@@ -1,7 +1,7 @@
 <section class="parent padding-top">
-  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center; ">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;min-width: 1288.41px ">
     <mat-card-title style="background-color: skyblue; text-align: center; ">View All Drugs</mat-card-title>
-    <div style="align-content: center;">
+    <div style="align-content: center;" *ngIf="!loader">
       <div *ngIf="!drugs.length > 0" style="text-align: center; ">No Drugs Found In The System. Please 
         <a (click)="addDrug()" style="cursor: pointer;"> Add New Drugs</a>.
       </div>
@@ -65,9 +65,10 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-        <mat-paginator [pageSizeOptions]="[10, 20]" showFirstLastButtons 
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons 
         [length]="dataSource.data.length" (page)="custom()" ></mat-paginator>
       </div>
     </div>
+    <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
   </mat-card>
 </section>

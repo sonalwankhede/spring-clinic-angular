@@ -47,6 +47,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   public displayedColumns = ['name', 'gender', 'age', 'address', 'telephone', 'update', 'delete'];
 
   dialogRef: MatDialogRef<ConfirmDialogComponent>;
+  loader: boolean;
 
   constructor(private router: Router, private patientService: PatientService,
     public dialog: MatDialog) {
@@ -101,7 +102,9 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.dialogRef.afterClosed().subscribe(dialogResult => {
       const result = dialogResult;
       if (result) {
+        this.loader = true;
         this.patientService.deletePatient(patientId).subscribe(res => {
+          this.loader = false;
           this.ngOnInit();
         });
       }

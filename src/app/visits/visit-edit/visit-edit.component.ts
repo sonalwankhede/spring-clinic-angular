@@ -23,6 +23,7 @@ import { DatePipe } from '@angular/common';
 
 
 export class PrescriptedDrugs {
+  serialNumber: number;
   drug: string;
   dose: string;
   duration: string;
@@ -97,7 +98,19 @@ export class VisitEditComponent implements OnInit {
     '1-1-1',
     '0-0-1',
     '1-1-0',
-    '1-0-0'
+    '1-0-0',
+    '1/2-1/2-1/2',
+    '1/2-1/2-0',
+    '1/2-0-0',
+    '1/2-0-1/2',
+    '0-1/2-1/2',
+    '0-0-1/2',
+    '1/4-1/4-1/4',
+    '1/4-1/4-0',
+    '1/4-0-0',
+    '1/4-0-1/4',
+    '0-1/4-1/4',
+    '0-0-1/4'
   ];
 
   duration = [
@@ -132,12 +145,18 @@ export class VisitEditComponent implements OnInit {
   observationsResponse: string[];
   showRadioChips: boolean = false;
   showPathChips: boolean = false;
+  height: number = 0;
+  weight: number = 0;
+  bmi: number = 0;
+  bmiColor: string;
+  bmiHint: string;
 
   constructor(private visitService: VisitService,
     private commonService: CommonService, private drugService: DrugService,
     private router: Router, private route: ActivatedRoute, public datepipe: DatePipe) {
     this.prescriptionsArray = [
       {
+        serialNumber: 0,
         drug: '',
         duration: '',
         dose: '',
@@ -163,7 +182,7 @@ export class VisitEditComponent implements OnInit {
       bloodPressure: new FormControl('', []),
       height: new FormControl('', []),
       weight: new FormControl('', []),
-      bmi: new FormControl('', []),
+      bmi: new FormControl({ value: '', disabled: true }, []),
       complaints: new FormControl('', []),
       observations: new FormControl('', []),
       diagnosis: new FormControl('', []),
@@ -179,6 +198,7 @@ export class VisitEditComponent implements OnInit {
   }
   createDrugArray(): any {
     return this.formBuilder.group({
+      serialNumber: new FormControl('', []),
       drug: new FormControl('', []),
       duration: new FormControl('', []),
       dose: new FormControl('', []),
@@ -191,15 +211,23 @@ export class VisitEditComponent implements OnInit {
   }
   // remove contact from group
   removeDrug(index) {
+    const drugToDelete = this.prescriptions.value[index].drug;
+    this.prescriptionsArray = this.prescriptionsArray.filter(function (obj) {
+      return obj.drug !== drugToDelete;
+    });
     this.prescriptions.removeAt(index);
   }
   setListValue(event, i, fieldName) {
     this.prescriptionsArray[i] ? this.prescriptionsArray[i][fieldName] = event
       : this.prescriptionsArray[i] = this.getPrescriptionObject(), this.prescriptionsArray[i][fieldName] = event;
+    if (fieldName !== 'serialName' && this.prescriptionsArray[i].serialNumber === 0) {
+      this.prescriptionsArray[i].serialNumber = i + 1;
+    }
   }
 
   private getPrescriptionObject(): PrescriptedDrugs {
     return {
+      serialNumber: 0,
       drug: '',
       duration: '',
       dose: '',
@@ -239,27 +267,27 @@ export class VisitEditComponent implements OnInit {
         this.visit = response;
         this.currentPatient = this.visit.patient;
         forkJoin([this.commonService.getDiagnosisDictionary(),
-          this.commonService.getKnownCase(),
-          this.commonService.getAllObservations(),
-          this.commonService.getPathology(),
-          this.commonService.getRadiology()]).subscribe(
-            results => {
-              this.separteOutStringFromObject(results[0], 'diagnosis', this.diagnosisList);
-              this.separteOutStringFromObject(results[1], 'issues', this.complaintsList);
-              this.separteOutStringFromObject(results[2], 'observations', this.observationsList);
-              this.separteOutStringFromObject(results[3], 'pathology', this.pathologyList);
-              this.separteOutStringFromObject(results[4], 'radiology', this.radiologyList);
-              this.setFormValues();
-            });
+        this.commonService.getKnownCase(),
+        this.commonService.getAllObservations(),
+        this.commonService.getPathology(),
+        this.commonService.getRadiology()]).subscribe(
+          results => {
+            this.separteOutStringFromObject(results[0], 'diagnosis', this.diagnosisList);
+            this.separteOutStringFromObject(results[1], 'issues', this.complaintsList);
+            this.separteOutStringFromObject(results[2], 'observations', this.observationsList);
+            this.separteOutStringFromObject(results[3], 'pathology', this.pathologyList);
+            this.separteOutStringFromObject(results[4], 'radiology', this.radiologyList);
+            this.setFormValues();
+          });
         this.showVisitForm = true;
       },
       error => this.errorMessage = error as any);
-      this.drugService.getDrugs().subscribe(result => {
-        for (let key in result) {
-          delete result[key].id;
-          this.drugsList.push(Object.values(result[key]).join(' '));
-        }
-      });
+    this.drugService.getDrugs().subscribe(result => {
+      for (let obj of result) {
+        delete obj.id;
+        this.drugsList.push(obj.formOfDrugs.substring(0, 3) + '. ' + obj.brandName + ' (' + obj.content + ') ' + obj.strength);
+      }
+    });
   }
   setFormValues() {
     this.visitForm.controls.visitDate.setValue(new Date(this.visit.visitDate));
@@ -268,6 +296,10 @@ export class VisitEditComponent implements OnInit {
     this.visitForm.controls.spo2.setValue(this.visit.spo2);
     this.visitForm.controls.respirationRate.setValue(this.visit.respirationRate);
     this.visitForm.controls.bloodPressure.setValue(this.visit.bloodPressure);
+    this.height = this.visit.height;
+    this.weight = this.visit.weight;
+    this.bmi = this.visit.bmi;
+    this.getBmiValue();
     this.visitForm.controls.height.setValue(this.visit.height);
     this.visitForm.controls.weight.setValue(this.visit.weight);
     this.visitForm.controls.bmi.setValue(this.visit.bmi);
@@ -275,6 +307,9 @@ export class VisitEditComponent implements OnInit {
     this.finalObservationsList = this.visit.observations.split(',');
     this.finalDiagnosisList = this.visit.diagnosis.split(',');
     this.prescriptionsArray = this.visit.prescription;
+    this.prescriptionsArray.sort(function (a, b) {
+      return a.serialNumber - b.serialNumber;
+    });
     this.prescriptions = new FormArray([]);
     for (let x of this.prescriptionsArray) {
       this.prescriptions.push(this.formBuilder.group({
@@ -283,17 +318,17 @@ export class VisitEditComponent implements OnInit {
         duration: x.duration,
         instructions: x.instructions
       }));
-      if( !this.drugsList.includes(x.drug) ) {
+      if (!this.drugsList.includes(x.drug)) {
         this.drugsList.push(x.drug);
       }
     }
-    this.visitForm.setControl('prescriptions', this.prescriptions );
-    if(this.visit.radiology) {
+    this.visitForm.setControl('prescriptions', this.prescriptions);
+    if (this.visit.radiology) {
       this.visitForm.controls.radiology.setValue('Yes');
       this.showRadioChips = true;
       this.finalRadiologyList = this.visit.radiology.split(',');
     }
-    if(this.visit.pathology) {
+    if (this.visit.pathology) {
       this.visitForm.controls.pathology.setValue('Yes');
       this.showPathChips = true;
       this.finalPathologyList = this.visit.pathology.split(',');
@@ -311,6 +346,43 @@ export class VisitEditComponent implements OnInit {
       dose: new FormControl(prescription.dose, []),
       instructions: new FormControl(prescription.instructions, [])
     });
+  }
+  calculateBmi(value, field) {
+    if (field === 'height') {
+      this.height = value;
+    }
+    if (field === 'weight') {
+      this.weight = value;
+    }
+    if (this.weight !== 0 && this.height !== 0) {
+      var multiplier = Math.pow(10, 1 || 0);
+      this.bmi = Math.round((this.weight / ((this.height * 0.01) * (this.height * 0.01))) * multiplier) / multiplier;
+      this.visitForm.controls.bmi.setValue(this.bmi);
+      this.getBmiValue();
+    }
+  }
+  getBmiValue() {
+    if (this.bmi < 18.5) {
+      this.bmiColor = "#ffe400";
+      this.bmiHint = 'Under Weight';
+    } else if (this.bmi >= 18.5 && this.bmi <= 24) {
+      this.bmiColor = "green";
+      this.bmiHint = 'Healthy Weight';
+    } else if (this.bmi > 24 && this.bmi <= 29.9) {
+      this.bmiColor = "#ffe400";
+      this.bmiHint = 'Over Weight';
+    } else if (this.bmi > 30) {
+      if (this.bmi > 30 && this.bmi <= 34.99) {
+        this.bmiColor = "#ca5353";
+        this.bmiHint = 'Obese Class I';
+      } else if (this.bmi >= 35 && this.bmi <= 39.99) {
+        this.bmiColor = "#b90606";
+        this.bmiHint = 'Obese Class II';
+      } else if (this.bmi >= 40) {
+        this.bmiColor = "#8a0101";
+        this.bmiHint = 'Obese Class III';
+      }
+    }
   }
   separteOutStringFromObject(resultList, field, arrayToBePushedTo) {
     for (let key in resultList) {
@@ -341,9 +413,12 @@ export class VisitEditComponent implements OnInit {
 
   onSubmit(visit: Visit) {
     visit.id = null;
-    const that = this;
     visit.patient = this.currentPatient;
-    // visit.visitDate = moment(visit.visitDate).format('YYYY/MM/DD');
+    if (this.bmi !== 0) {
+      visit.bmi = this.bmi;
+    } else {
+      visit.bmi = null;
+    }
     visit.diagnosis = this.finalDiagnosisList.toString();
     visit.complaints = this.finalComplaintsList.toString();
     visit.observations = this.finalObservationsList.toString();
@@ -357,8 +432,7 @@ export class VisitEditComponent implements OnInit {
     } else {
       visit.radiology = this.finalRadiologyList.toString();
     }
-    visit['prescriptions'] = [];
-    visit['prescriptions'] = this.prescriptionsArray;
+    visit['prescriptions'] =  this.prescriptionsArray;
     this.loader = true;
     this.visitService.updateVisit(this.visit.id.toString(), visit).subscribe(
       newVisit => {
@@ -457,6 +531,3 @@ export class VisitEditComponent implements OnInit {
     this.router.navigate(['/patients', this.visit.patient.id, 'visits', this.visit.id, 'detail']);
   }
 }
-
-
-
