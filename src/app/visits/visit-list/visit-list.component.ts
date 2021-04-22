@@ -28,6 +28,7 @@ import { MatDialog, MatDialogRef, MatPaginator, MatTableDataSource } from '@angu
 import { MatSort } from '@angular/material/sort';
 import { Patient } from 'app/patients/patient';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'app/common-component/dialog/confirm-dialog/confirm-dialog.component';
+import { TableUtil } from 'app/util/table-data-util';
 
 @Component({
   selector: 'app-visit-list',
@@ -82,6 +83,22 @@ export class VisitListComponent implements AfterViewInit {
         }
       }
     };
+  }
+  exportTable() {
+    const drugsData: Partial<Visit>[] = this.dataSource.data.map(x => ({
+      visitDate: x.visitDate,
+      complaints: x.complaints,
+      temperature: x.temperature,
+      pulse: x.pulse,
+      spo2: x.spo2,
+      respirationRate: x.respirationRate,
+      bloodPressure: x.bloodPressure,
+      height: x.height,
+      weight: x.weight,
+      observations: x.observations,
+      diagnosis: x.diagnosis
+    }));
+    TableUtil.exportArrayToExcel(drugsData, 'All_Visits');
   }
   loadPage() {
     this.patientId = this.route.snapshot.params.id;

@@ -31,7 +31,7 @@ import { Allergy } from './allergies/allergy';
 
 @Injectable()
 export class CommonService {
- 
+
   entityUrl = environment.REST_API_URL;
 
   private readonly handlerError: HandleError;
@@ -79,19 +79,33 @@ export class CommonService {
         )
       );
   }
+  addToPathology(newScans): Observable<any[]> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'pathology', newScans)
+      .pipe(
+        catchError(this.handlerError('addToPathology', newScans)
+        )
+      );
+  }
+  addToRadiology(newScans): Observable<any[]> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'radiology', newScans)
+      .pipe(
+        catchError(this.handlerError('addToRadiology', newScans)
+        )
+      );
+  }
   addToObservations(observationsAreNew: any[]) {
     return this.http.post<any[]>(environment.REST_API_URL + 'observations', observationsAreNew)
-    .pipe(
-      catchError(this.handlerError('addToObservations', observationsAreNew)
-      )
-    );
+      .pipe(
+        catchError(this.handlerError('addToObservations', observationsAreNew)
+        )
+      );
   }
   addToComplaints(complaintsAreNew: any[]) {
     return this.http.post<any[]>(environment.REST_API_URL + 'knownCases', complaintsAreNew)
-    .pipe(
-      catchError(this.handlerError('addToComplaints', complaintsAreNew)
-      )
-    );
+      .pipe(
+        catchError(this.handlerError('addToComplaints', complaintsAreNew)
+        )
+      );
   }
   addToDrugAllergies(drugAllergiesAreNew: any[]) {
     return this.http.post<any[]>(environment.REST_API_URL + 'drugAllergies', drugAllergiesAreNew)

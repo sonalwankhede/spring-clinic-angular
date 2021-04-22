@@ -456,7 +456,7 @@ export class VisitEditComponent implements OnInit {
       scansAreNew.push(tempScan);
     }
     if (scansAreNew != null) {
-      this.commonService.addToComplaints(scansAreNew).subscribe(
+      this.commonService.addToPathology(scansAreNew).subscribe(
         newlyAdded => {
         },
         error => this.errorMessage = error as any
@@ -472,7 +472,7 @@ export class VisitEditComponent implements OnInit {
       scansAreNew.push(tempScan);
     }
     if (scansAreNew != null) {
-      this.commonService.addToComplaints(scansAreNew).subscribe(
+      this.commonService.addToRadiology(scansAreNew).subscribe(
         newlyAdded => {
         },
         error => this.errorMessage = error as any

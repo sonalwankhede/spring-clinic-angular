@@ -15,3 +15,6 @@
   mat-form-field.mat-form-field-should-float label {
     font-weight: bolder !important;
   }
+  th.mat-sort-header-sorted {
+    color: black;
+  }

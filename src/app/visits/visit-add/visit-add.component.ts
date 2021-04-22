@@ -126,7 +126,7 @@ export class VisitAddComponent implements OnInit {
     '1/4-0-1/4',
     '0-1/4-1/4',
     '0-0-1/4'
-    ];
+  ];
 
   duration = [
     'Before Meal',
@@ -198,7 +198,7 @@ export class VisitAddComponent implements OnInit {
       bloodPressure: new FormControl('', []),
       height: new FormControl('', []),
       weight: new FormControl('', []),
-      bmi: new FormControl({value: '', disabled: true}, []),
+      bmi: new FormControl({ value: '', disabled: true }, []),
       complaints: new FormControl('', []),
       observations: new FormControl('', []),
       diagnosis: new FormControl('', []),
@@ -411,7 +411,7 @@ export class VisitAddComponent implements OnInit {
       scansAreNew.push(tempScan);
     }
     if (scansAreNew != null) {
-      this.commonService.addToComplaints(scansAreNew).subscribe(
+      this.commonService.addToPathology(scansAreNew).subscribe(
         newlyAdded => {
         },
         error => this.errorMessage = error as any
@@ -427,7 +427,7 @@ export class VisitAddComponent implements OnInit {
       scansAreNew.push(tempScan);
     }
     if (scansAreNew != null) {
-      this.commonService.addToComplaints(scansAreNew).subscribe(
+      this.commonService.addToRadiology(scansAreNew).subscribe(
         newlyAdded => {
         },
         error => this.errorMessage = error as any

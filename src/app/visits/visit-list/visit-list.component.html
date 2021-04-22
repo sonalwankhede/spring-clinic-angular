@@ -3,9 +3,20 @@
     <mat-card-title style="background-color: skyblue; text-align: center;">All Visits For:: <span *ngIf="showTable">{{
         patient.firstName }}
         {{ patient.lastName }}</span></mat-card-title>
+        <div style="display: inline-block; float: right;" *ngIf="visits && visits.length > 0">
+          <button mat-raised-button style="background-color: forestgreen; 
+          color: white;
+          font-size: 12px;
+          vertical-align: middle;
+          margin-right: 5px;
+          margin-bottom: 5px;" (click)="exportTable()">
+            <mat-icon>file_copy</mat-icon>
+            Export
+          </button>
+        </div>
     <div *ngIf="!loader">
       <div style="text-align: center;" *ngIf="visits.length === 0">No Visit Records Found
-        <a (click)="addVisit()" style="cursor: pointer;"> Click to Add New Visit</a>.
+        <a (click)="addVisit()" style="cursor: pointer !important;"> Click to Add New Visit</a>.
       </div>
       <div style="align-content: center;" [hidden]="!(showTable && visits.length > 0)">
         <table mat-table style="width: 100%; " class="mat-elevation-z8" [dataSource]="dataSource" matSort

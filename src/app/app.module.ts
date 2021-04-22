@@ -40,7 +40,7 @@ import { AllergyAddComponent } from './allergies/allergy-add/allergy-add.compone
 import {DatePipe} from '@angular/common';
 import { PrescriptionsAddComponent } from './prescriptions/prescriptions-add/prescriptions-add.component';
 import {
-  MatInputModule, MatSliderModule, MatFormFieldModule, MatButtonModule, MatSortModule,
+  MatInputModule, MatSliderModule, MatFormFieldModule, MatButtonModule, MatSortModule, MatCheckboxModule,
   MatSelectModule, MatIconModule, MatCardModule, MatRadioModule, MatPaginatorModule, MatDividerModule
 } from '@angular/material';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -81,6 +81,7 @@ import { RadiologyComponent } from './radiology/radiology/radiology.component';
     MatInputModule,
     MatInputModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatSelectModule,
     MatIconModule,
     MatCardModule,
@@ -104,6 +105,7 @@ import { RadiologyComponent } from './radiology/radiology/radiology.component';
     MatInputModule,
     MatInputModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatSelectModule,
     MatIconModule,
     MatCardModule,

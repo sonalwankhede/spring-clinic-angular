@@ -31,6 +31,7 @@ import {catchError} from 'rxjs/internal/operators';
 
 @Injectable()
 export class DrugService {
+  
   entityUrl = environment.REST_API_URL + 'drugs';
 
   private readonly handlerError: HandleError;
@@ -80,5 +81,21 @@ export class DrugService {
         catchError(this.handlerError('deleteDrug', 0))
       );
   }
-
+  deleteDrugs(data: number[]): Observable<number> {
+    return this.http.post<number>(this.entityUrl + '/delete', data)
+    .pipe(
+      catchError(this.handlerError('deleteDrugs', 0))
+    );
+  }
+  updateDrugs(data: number[], fieldName: String, fieldValue: String): Observable<any> {
+    const option = {
+      ids: data,
+      fieldName: fieldName,
+      fieldValue: fieldValue
+    }
+    return this.http.post<any>(this.entityUrl + '/update', option)
+    .pipe(
+      catchError(this.handlerError('updateDrugs', 0))
+    );
+  }
 }

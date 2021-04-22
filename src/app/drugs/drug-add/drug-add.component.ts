@@ -107,7 +107,6 @@ export class DrugAddComponent implements OnInit {
       }, {});
       let drugs: Drug[];
       drugs = jsonData[Object.keys(jsonData)[0]];
-      console.log(drugs);
       this.drugService.uploadDrugs(drugs).subscribe(
         res => {
           this.gotoDrugList();

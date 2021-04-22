@@ -31,7 +31,7 @@ import {DrugAddComponent} from './drug-add/drug-add.component';
 import {DrugResolver} from './drug-resolver';
 import { ChipsModule} from '../common-component/chips/chips.module';
 import {
-  MatInputModule, MatSliderModule, MatFormFieldModule, MatButtonModule, MatProgressSpinnerModule,
+  MatInputModule, MatSliderModule, MatFormFieldModule, MatButtonModule, MatProgressSpinnerModule, MatCheckboxModule,
   MatSelectModule, MatIconModule, MatCardModule, MatDatepickerModule, MatRadioModule, MatPaginatorModule
 } from '@angular/material';
 import { MatTableModule } from '@angular/material';
@@ -40,13 +40,13 @@ import { MatTableModule } from '@angular/material';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSelectModule,
     DrugsRoutingModule,
     ChipsModule,
     MatSliderModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatSelectModule,
     MatIconModule,
     MatCardModule,

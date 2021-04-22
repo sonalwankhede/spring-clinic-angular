@@ -21,7 +21,6 @@
  */
 
 import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { MatDialog, MatDialogRef, MatPaginator } from '@angular/material'
 import { PatientService } from '../patient.service';
 import { Patient } from '../patient';
@@ -30,20 +29,22 @@ import { MatTableDataSource } from '@angular/material';
 import { ConfirmDialogComponent } from '../../common-component/dialog/confirm-dialog/confirm-dialog.component';
 import { ConfirmDialogModel } from '../../common-component/dialog/confirm-dialog/confirm-dialog.component';
 import { ViewChild } from '@angular/core';
+import { TableUtil } from '../../util/table-data-util';
 
 @Component({
   selector: 'app-patient-list',
   templateUrl: './patient-list.component.html',
   styleUrls: ['./patient-list.component.css']
 })
-export class PatientListComponent implements OnInit, AfterViewInit {
+export class PatientListComponent implements OnInit {
   errorMessage: string;
   patients: Patient[];
   dataSource = new MatTableDataSource<Patient>();
   showTable: boolean = false;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-
+  @ViewChild(MatPaginator,  {static: false}) set matPaginator(paginator: MatPaginator) {
+    this.dataSource.paginator = paginator;
+}
   public displayedColumns = ['name', 'gender', 'age', 'address', 'telephone', 'update', 'delete'];
 
   dialogRef: MatDialogRef<ConfirmDialogComponent>;
@@ -55,18 +56,20 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.patients = [];
+    this.loader = true;
     this.patientService.getPatients().subscribe(
       patients => {
-        this.patients = patients,
-          this.dataSource.data = patients as Patient[];
-        error => this.errorMessage = error as any;
+        this.patients = patients;
+        this.dataSource.data = patients as Patient[];
         this.showTable = true;
+        this.loader = false;
+      },
+      (error) => {
+        this.patients = [];
+        this.dataSource = new MatTableDataSource<Patient>();
+        this.loader = false;
+        console.log(error);
       });
-    this.dataSource.paginator = this.paginator;
-  }
-  ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
   }
   custom() {
     const ELEMENT_DATA = [];
@@ -83,7 +86,21 @@ export class PatientListComponent implements OnInit, AfterViewInit {
   addPatient() {
     this.router.navigate(['/patients/add']);
   }
-
+  exportTable() {
+    const drugsData: Partial<Patient>[] = this.dataSource.data.map(x => ({
+      firstName: x.firstName,
+      middleName: x.middleName,
+      lastName: x.lastName,
+      gender: x.gender,
+      age: x.age,
+      address: x.address,
+      city: x.city,
+      drugAllergies: x.drugAllergies,
+      otherAllergies: x.otherAllergies,
+      history: x.history
+    }));
+    TableUtil.exportArrayToExcel(drugsData, "All_Patients");
+  }
   redirectToPatientDetail(patientId: number) {
     this.patientService.getPatientById(patientId).subscribe(res => {
       this.router.navigate(['/patients', patientId]);
@@ -93,7 +110,7 @@ export class PatientListComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/patients', patientId, 'visits', 'add']);
   }
   redirectToDelete(patientId: number) {
-    const message = `Are you sure you want to delete this patient?`;
+    const message = `Are you sure you want to permanently delete this patient?`;
     const dialogData = new ConfirmDialogModel("Delete Patient?", message);
     this.dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: dialogData

@@ -101,14 +101,14 @@
             </mat-form-field>
 
             <span *ngIf="i > 0" (click)=removeDrug(i)
-              style="cursor: pointer; color: rgb(238, 22, 6); font-weight: bolder;">
+              style="cursor: pointer !important; color: rgb(238, 22, 6); font-weight: bolder;">
               <mat-icon style="vertical-align: middle;">delete</mat-icon> Remove Drug
             </span>
           </div>
         </mat-card-content>
         <div style="color: rgb(131, 190, 13);font-weight: bolder;
           text-align: end; margin-right: 20px;">
-          <span style="cursor: pointer; " (click)="addDrug()">
+          <span style="cursor: pointer !important; " (click)="addDrug()">
             <mat-icon style="vertical-align: middle;">add</mat-icon> Prescribe Drug
           </span>
         </div>

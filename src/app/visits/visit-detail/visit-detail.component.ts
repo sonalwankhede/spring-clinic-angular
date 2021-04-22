@@ -47,13 +47,13 @@ export class VisitDetailComponent implements OnInit {
       response => {
         this.visit = response;
         this.prescription = this.visit['prescription'];
-        this.prescription.sort(function(a, b) {
+        this.prescription.sort(function (a, b) {
           return a.serialNumber - b.serialNumber;
         });
         this.currentPatient = this.visit.patient;
         this.dataSourceVisit.data = this.visit as unknown as Visit[];
         this.showTable = true;
-        this.visitdate =this.datepipe.transform(this.visit.visitDate, 'dd   MM   yyyy');
+        this.visitdate = this.datepipe.transform(this.visit.visitDate, 'dd   MM   yyyy');
       },
       error => this.errorMessage = error as any);
   }
@@ -99,7 +99,7 @@ export class VisitDetailComponent implements OnInit {
       let PDF = new jsPDF('p', 'in', [510, 737]);
       let position = 0;
       PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight, 'alias', 'SLOW')
-      PDF.save((this.currentPatient.firstName + '_' + this.currentPatient.lastName + '_' + this.visitdate +'.pdf').replace(/   /g,'_'));
+      PDF.save((this.currentPatient.firstName + '_' + this.currentPatient.middleName + '_' + this.currentPatient.lastName + '_' + this.visitdate + '.pdf').replace(/   /g, '_'));
       this.showTable = true;
       this.loader = false;
     });
