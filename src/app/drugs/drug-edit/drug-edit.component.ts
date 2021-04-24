@@ -25,6 +25,9 @@ import { Drug } from '../drug';
 import { DrugService } from '../drug.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ConfirmDialogModel } from 'app/common-component/dialog/confirm-dialog/confirm-dialog.component';
+import { AlertDialogComponent } from 'app/common-component/dialog/alert-dialog/alert-dialog.component';
+import { MatDialogRef, MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-drug-edit',
@@ -44,12 +47,14 @@ export class DrugEditComponent implements OnInit {
 
   formOfDrugs = 'formOfDrugs';
 
-  drugsForms = ['Syp','Tab','Cap','Pow','Inj','Crm','Gel','Lot','Liq','Inh','Ras'];
-  
+  drugsForms = ['Syp', 'Tab', 'Cap', 'Pow', 'Inj', 'Crm', 'Gel', 'Lot', 'Liq', 'Inh', 'Ras'];
+
   formDropDown = "Form of Drug";
+  loader: boolean;
+  dialogRef: MatDialogRef<AlertDialogComponent>;
 
   constructor(private formBuilder: FormBuilder,
-    private drugService: DrugService, private route: ActivatedRoute, private router: Router) {
+    private drugService: DrugService, private route: ActivatedRoute, private router: Router, public dialog: MatDialog) {
     this.drug = {} as Drug;
     this.buildForm();
   }
@@ -82,13 +87,26 @@ export class DrugEditComponent implements OnInit {
   }
 
   onSubmit(drug: Drug) {
+    this.loader = true;
     this.drugService.updateDrug(this.drug.id.toString(), drug).subscribe(
       res => {
         console.log('update success');
         this.gotoDrugList();
-      },
-      error => this.errorMessage = error as any);
-
+      }, (error) => {
+        console.log(error);
+        this.errorMessage = 'There was an issue while editing this drug. Please retry';
+        const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+        this.dialogRef = this.dialog.open(AlertDialogComponent, {
+          data: dialogData
+        });
+        this.dialogRef.afterClosed().subscribe(dialogResult => {
+          const result = dialogResult;
+          if (result) {
+            this.loader = false;
+            this.router.navigate(['/drugs', drug.id, 'edit']);
+          }
+        });
+      });
   }
 
   gotoDrugList() {

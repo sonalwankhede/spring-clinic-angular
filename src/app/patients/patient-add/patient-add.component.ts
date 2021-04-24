@@ -27,6 +27,9 @@ import { Router } from '@angular/router';
 import { CommonService } from 'app/common.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { AlertDialogComponent } from 'app/common-component/dialog/alert-dialog/alert-dialog.component';
+import { ConfirmDialogModel } from 'app/common-component/dialog/confirm-dialog/confirm-dialog.component';
+import { MatDialogRef, MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-patient-add',
@@ -48,14 +51,16 @@ export class PatientAddComponent implements OnInit {
   caseList = [];
   finalCaseList = [];
 
-  drugAllergies ='drugAllergies';
-  otherAllergies ='otherAllergies';
+  drugAllergies = 'drugAllergies';
+  otherAllergies = 'otherAllergies';
   history = 'history';
   allvalid: boolean = false;
   public formBuilder: FormBuilder;
   loader: boolean;
+  dialogRef: MatDialogRef<AlertDialogComponent>;
 
-  constructor(private patientService: PatientService, private router: Router, private commonService: CommonService) {
+  constructor(private patientService: PatientService, private router: Router, private commonService: CommonService
+    , public dialog: MatDialog) {
     this.patient = {} as Patient;
     this.loader = false;
     this.otherAllergiesList = [];
@@ -91,7 +96,7 @@ export class PatientAddComponent implements OnInit {
       history: new FormControl('', [])
     });
     forkJoin([this.commonService.getOtherAllergies(), this.commonService.getDrugAllergies(),
-      this.commonService.getKnownCase() ]).subscribe(
+    this.commonService.getKnownCase()]).subscribe(
       results => {
         this.separteOutStringFromObject(results[0], 'allergy', this.otherAllergiesList);
         this.separteOutStringFromObject(results[1], 'allergy', this.drugAllergiesList);
@@ -100,7 +105,7 @@ export class PatientAddComponent implements OnInit {
       }
     )
   }
-  checkIfFormIsValid(): boolean{
+  checkIfFormIsValid(): boolean {
     return this.patientForm.valid && this.finalDrugAllergiesList.length != 0 &&
       this.finalCaseList.length != 0 && this.finalOtherAllergiesList.length != 0;
   }
@@ -146,16 +151,26 @@ export class PatientAddComponent implements OnInit {
     this.loader = true;
     this.patientService.addPatient(patient)
       .subscribe(res => {
-        this.router.navigate(['/patients/'+ res.id +'/visits/add']);
-      },
-        (error => {
-          //temporary as well
-          // this.location.back();
-        })
-      );
-      this.addNewlyAddedKnownCases();
-      this.addNewlyAddedDrugAllergies();
-      this.addNewlyAddedOtherAllergies();
+        this.router.navigate(['/patients/' + res.id + '/visits/add']);
+      }, (error) => {
+        console.log(error);
+        console.log(error);
+        this.errorMessage = 'There was an issue while adding the patient. Please retry';
+        const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+        this.dialogRef = this.dialog.open(AlertDialogComponent, {
+          data: dialogData
+        });
+        this.dialogRef.afterClosed().subscribe(dialogResult => {
+          const result = dialogResult;
+          if (result) {
+            this.loader = false;
+            this.router.navigate(['/patients', this.patient.id, 'add']);
+          }
+        });
+      });
+    this.addNewlyAddedKnownCases();
+    this.addNewlyAddedDrugAllergies();
+    this.addNewlyAddedOtherAllergies();
   }
   addNewlyAddedKnownCases() {
     const newlyAddedCases = this.finalCaseList.filter(x => !this.caseList.includes(x));
@@ -168,9 +183,10 @@ export class PatientAddComponent implements OnInit {
     if (casesAreNew != null) {
       this.commonService.addToComplaints(casesAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   addNewlyAddedDrugAllergies() {
@@ -184,9 +200,10 @@ export class PatientAddComponent implements OnInit {
     if (drugAllergiesAreNew != null) {
       this.commonService.addToDrugAllergies(drugAllergiesAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   addNewlyAddedOtherAllergies() {
@@ -200,9 +217,10 @@ export class PatientAddComponent implements OnInit {
     if (otherAllergiesAreNew != null) {
       this.commonService.addToOtherAllergies(otherAllergiesAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   gotoPatientsList() {

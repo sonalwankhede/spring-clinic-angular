@@ -29,6 +29,7 @@ import { MatSort } from '@angular/material/sort';
 import { Patient } from 'app/patients/patient';
 import { ConfirmDialogComponent, ConfirmDialogModel } from 'app/common-component/dialog/confirm-dialog/confirm-dialog.component';
 import { TableUtil } from 'app/util/table-data-util';
+import { AlertDialogComponent } from 'app/common-component/dialog/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-visit-list',
@@ -51,6 +52,7 @@ export class VisitListComponent implements AfterViewInit {
   patientId: any;
   patient: Patient;
   dialogRef: MatDialogRef<ConfirmDialogComponent>;
+  dialogRefAlert: MatDialogRef<AlertDialogComponent>;
   sortedData: Visit[];
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   loader: boolean;
@@ -65,8 +67,24 @@ export class VisitListComponent implements AfterViewInit {
           this.sortedData = this.visits.slice();
         this.patient = this.visits[0].patient;
         this.dataSource.data = this.sortedData as Visit[];
-        error => this.errorMessage = error as any;
         this.showTable = true;
+      }, (error) => {
+        this.visits = [];
+        this.dataSource = new MatTableDataSource<Visit>();
+        this.loader = false;
+        console.log(error);
+        this.errorMessage = 'There are either no previous visits for this patient or an issue occurred while fetching them. Please try adding new visit.';
+        console.log(this.errorMessage);
+        // const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+        // this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+        //   data: dialogData
+        // });
+        // this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+        //   const result = dialogResult;
+        //   if (result) {
+        //     this.loader = false;
+        //   }
+        // });
       });
     this.dataSource.paginator = this.paginator;
   }
@@ -110,8 +128,24 @@ export class VisitListComponent implements AfterViewInit {
         this.patient = this.visits[0].patient;
         this.dataSource.data = this.sortedData as Visit[];
         this.dataSource.sort = this.sort;
-        error => this.errorMessage = error as any;
         this.showTable = true;
+        this.loader = false;
+      }, (error) => {
+        this.visits = [];
+        this.dataSource = new MatTableDataSource<Visit>();
+        this.loader = false;
+        console.log(error);
+        this.errorMessage = 'There are either no previous visits for this patient or an issue occurred while fetching them. Please try adding new visit.';
+        const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+        this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+          data: dialogData
+        });
+        this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+          const result = dialogResult;
+          if (result) {
+            this.loader = false;
+          }
+        });
       });
     this.dataSource.paginator = this.paginator;
   }
@@ -142,8 +176,21 @@ export class VisitListComponent implements AfterViewInit {
         if (this.visits.length === 0) {
           this.noVisits = true;
         }
-      },
-      error => this.errorMessage = error as any);
+      }, (error) => {
+        console.log(error);
+        this.errorMessage = 'There was an issue deleting this visit. Please retry';
+        const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+        this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+          data: dialogData
+        });
+        this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+          const result = dialogResult;
+          if (result) {
+            this.loader = false;
+            this.loadPage();
+          }
+        });
+      });
   }
   redirectVisitDetail(visit: Visit) {
     this.router.navigate(['/patients', this.patient.id, 'visits', visit.id, 'detail']);
@@ -161,8 +208,22 @@ export class VisitListComponent implements AfterViewInit {
         this.visitService.deleteVisit(visit.id.toString()).subscribe(res => {
           this.loader = false;
           this.loadPage();
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = 'There was an issue deleting this visit. Please retry';
+          const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+          this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+            data: dialogData
+          });
+          this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+            const result = dialogResult;
+            if (result) {
+              this.loadPage();
+            }
+          });
         });
       }
     });
   }
 }
+

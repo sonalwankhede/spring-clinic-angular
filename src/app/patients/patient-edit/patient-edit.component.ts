@@ -27,6 +27,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { CommonService } from 'app/common.service';
+import { AlertDialogComponent } from 'app/common-component/dialog/alert-dialog/alert-dialog.component';
+import { ConfirmDialogModel } from 'app/common-component/dialog/confirm-dialog/confirm-dialog.component';
+import { MatDialogRef, MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-patient-edit',
@@ -50,9 +53,11 @@ export class PatientEditComponent implements OnInit {
   drugAllergies = 'drugAllergies';
   otherAllergies = 'otherAllergies';
   history = 'history';
+  dialogRef: MatDialogRef<AlertDialogComponent>;
+  loader: boolean;
 
   constructor(private patientService: PatientService, private route: ActivatedRoute, private router: Router,
-    private commonService: CommonService) {
+    private commonService: CommonService, public dialog: MatDialog) {
     this.patient = {} as Patient;
     this.formBuilder = new FormBuilder();
     this.patientForm = this.formBuilder.group({
@@ -121,11 +126,22 @@ export class PatientEditComponent implements OnInit {
     patient.history = this.finalCaseList.toString();
     this.patientService.updatePatient(this.patient.id, patient).subscribe(
       res => {
-        // this.patient = res;
         this.gotoPatientDetail(this.patient);
-      },
-      error => this.errorMessage = error as any
-    );
+      }, (error) => {
+        console.log(error);
+        this.errorMessage = 'There was an issue while updating the patient. Please retry';
+        const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+        this.dialogRef = this.dialog.open(AlertDialogComponent, {
+          data: dialogData
+        });
+        this.dialogRef.afterClosed().subscribe(dialogResult => {
+          const result = dialogResult;
+          if (result) {
+            this.loader = false;
+            this.router.navigate(['/patients', this.patient.id, 'edit']);
+          }
+        });
+      });
     this.addNewlyAddedKnownCases();
     this.addNewlyAddedDrugAllergies();
     this.addNewlyAddedOtherAllergies();
@@ -141,9 +157,10 @@ export class PatientEditComponent implements OnInit {
     if (casesAreNew != null) {
       this.commonService.addToComplaints(casesAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   addNewlyAddedDrugAllergies() {
@@ -157,9 +174,10 @@ export class PatientEditComponent implements OnInit {
     if (drugAllergiesAreNew != null) {
       this.commonService.addToDrugAllergies(drugAllergiesAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   addNewlyAddedOtherAllergies() {
@@ -173,9 +191,10 @@ export class PatientEditComponent implements OnInit {
     if (otherAllergiesAreNew != null) {
       this.commonService.addToOtherAllergies(otherAllergiesAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   gotoPatientDetail(patient: Patient) {

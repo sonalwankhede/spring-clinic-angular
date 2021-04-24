@@ -26,8 +26,6 @@ import { environment } from '../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { HandleError, HttpErrorHandler } from './error.service';
-import { Allergy } from './allergies/allergy';
-
 
 @Injectable()
 export class CommonService {
@@ -134,10 +132,38 @@ export class CommonService {
         catchError(this.handlerError('getRadiology', []))
       );
   }
+  removeFromRadiology(scansAreRemoved: any[]): Observable<any[]> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'radiology/delete', scansAreRemoved)
+      .pipe(
+        catchError(this.handlerError('removeFromRadiology', scansAreRemoved)
+        )
+      );
+  }
   getPathology(): Observable<any[]> {
     return this.http.get<any[]>(environment.REST_API_URL + 'pathology')
       .pipe(
         catchError(this.handlerError('getPathology', []))
       );
+  }
+  removeFromPathology(scansAreRemoved: any[]): Observable<any[]> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'pathology/delete', scansAreRemoved)
+      .pipe(
+        catchError(this.handlerError('removeFromPathology', scansAreRemoved)
+        )
+      );
+  }
+  removeFromDrugAllergies(drugAllergiesRemoved: any[]): Observable<any> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'drugAllergies/delete', drugAllergiesRemoved)
+    .pipe(
+      catchError(this.handlerError('removeFromDrugAllergies', drugAllergiesRemoved)
+      )
+    );
+  }
+  removeFromOtherAllergies(otherAllergiesRemoved: any[]): Observable<any> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'otherAllergies/delete', otherAllergiesRemoved)
+    .pipe(
+      catchError(this.handlerError('removeFromDrugAllergies', otherAllergiesRemoved)
+      )
+    );
   }
 }

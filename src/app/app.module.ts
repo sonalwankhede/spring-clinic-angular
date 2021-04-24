@@ -51,6 +51,11 @@ import { TemperatureModule } from './common-component/temperature/temperature.mo
 import { SelectModule } from './common-component/select/select.module';
 import { PathologyComponent } from './pathology/pathology/pathology.component';
 import { RadiologyComponent } from './radiology/radiology/radiology.component';
+import { DrugAllergiesComponent } from './drug-allergies/drug-allergies/drug-allergies.component';
+import { OtherAllergiesComponent } from './other-allergies/other-allergies/other-allergies.component';
+import { ComplaintsComponent } from './complaints/complaints/complaints.component';
+import { PreliminaryDiagnosisComponent } from './preliminary-diagnosis/preliminary-diagnosis/preliminary-diagnosis.component';
+import { KnownCaseComponent } from './known-case/known-case/known-case.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +63,12 @@ import { RadiologyComponent } from './radiology/radiology/radiology.component';
     AllergyAddComponent,
     PrescriptionsAddComponent,
     PathologyComponent,
-    RadiologyComponent
+    RadiologyComponent,
+    DrugAllergiesComponent,
+    OtherAllergiesComponent,
+    ComplaintsComponent,
+    PreliminaryDiagnosisComponent,
+    KnownCaseComponent
   ],
   imports: [
     BrowserModule,

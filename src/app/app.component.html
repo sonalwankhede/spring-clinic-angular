@@ -54,7 +54,7 @@
                   New</span></a></li>
           </ul>
         </li>
-        <!-- <li>
+        <li>
           <a routerLink="/pathology" routerLinkActive="active" title="pathology">
             <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
             <span>Pathology</span>
@@ -65,7 +65,25 @@
             <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
             <span>Radiology</span>
           </a>
-        </li> -->
+        </li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+            aria-expanded="false">Suggestions<span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a routerLink="/drugAllergies"><span aria-hidden="true"></span><span>
+                  Drug Allergies</span></a>
+            </li>
+            <li><a routerLink="/otherAllergies"><span aria-hidden="true"></span><span>
+                  Other Allergies</span></a></li>
+            <li><a routerLink="/knownCase"><span aria-hidden="true"></span><span>
+                  Known Case</span></a></li>
+            <li><a routerLink="/complaints"><span aria-hidden="true"></span><span>
+                  Complaints</span></a></li>
+            <li><a routerLink="/preliminaryDiagnosis"><span aria-hidden="true"></span><span>
+                  Preliminary Diagnosis</span></a></li>
+          </ul>
+        </li>
 
       </ul>
 

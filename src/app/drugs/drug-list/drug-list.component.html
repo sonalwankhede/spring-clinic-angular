@@ -4,7 +4,7 @@
       <div style="display: inline-block;
       line-height: 40px;">View All Drugs</div>
     </mat-card-title>
-    <div style="display: inline-block; float: right; " *ngIf="drugs && drugs.length > 0">
+    <div style="display: inline-block; float: right; " *ngIf="!loader && drugs && drugs.length > 0">
       <button mat-raised-button style="background-color: rgb(240, 127, 46); 
     color: white;
     font-size: 12px;
@@ -120,7 +120,7 @@
               <mat-checkbox (change)="$event ? masterToggle() : null"
                 [checked]="selection.hasValue() && isAllSelected()"
                 [indeterminate]="selection.hasValue() && !isAllSelected()">
-                <span> ({{ selection.hasValue() ? selection.selected.length : ''}})</span>
+                <span> ({{ selection.hasValue() ? selection.selected.length : 0 }})</span>
               </mat-checkbox>
             </th>
             <td mat-cell *matCellDef="let row">

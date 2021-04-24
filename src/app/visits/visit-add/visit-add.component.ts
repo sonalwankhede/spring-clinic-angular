@@ -29,7 +29,6 @@ import { Patient } from '../../patients/patient';
 
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatAutocomplete } from '@angular/material/autocomplete';
-import * as moment from 'moment';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { CommonService } from 'app/common.service';
 import { Diagnosis } from 'app/models/diagnosis';
@@ -37,6 +36,9 @@ import { DrugService } from 'app/drugs/drug.service';
 import { Validators } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { FormArray } from '@angular/forms';
+import { AlertDialogComponent } from 'app/common-component/dialog/alert-dialog/alert-dialog.component';
+import { ConfirmDialogModel } from 'app/common-component/dialog/confirm-dialog/confirm-dialog.component';
+import { MatDialogRef, MatDialog } from '@angular/material';
 
 
 export class PrescriptedDrugs {
@@ -165,9 +167,10 @@ export class VisitAddComponent implements OnInit {
   bmi: number;
   bmiColor: string;
   bmiHint: string;
+  dialogRef: MatDialogRef<AlertDialogComponent>;
 
   constructor(private visitService: VisitService, private patientService: PatientService,
-    private commonService: CommonService, private drugService: DrugService,
+    private commonService: CommonService, private drugService: DrugService, public dialog: MatDialog,
     private router: Router, private route: ActivatedRoute) {
     this.loader = false;
     this.prescriptionsArray = [
@@ -278,8 +281,9 @@ export class VisitAddComponent implements OnInit {
         this.currentPatient = response;
         this.visit.patient = this.currentPatient;
         this.showVisitForm = true;
-      },
-      error => this.errorMessage = error as any);
+      }, (error) => {
+        this.errorMessage = error as any;
+      });
     forkJoin([this.commonService.getDiagnosisDictionary(),
     this.commonService.getKnownCase(),
     this.commonService.getAllObservations(),
@@ -393,9 +397,21 @@ export class VisitAddComponent implements OnInit {
         this.visit = newVisit;
         this.addedSuccess = true;
         this.goToVisitDetails();
-      },
-      error => this.errorMessage = error as any
-    );
+      }, (error) => {
+        console.log(error);
+        this.errorMessage = 'There was an issue while adding the visit. Please retry';
+        const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+        this.dialogRef = this.dialog.open(AlertDialogComponent, {
+          data: dialogData
+        });
+        this.dialogRef.afterClosed().subscribe(dialogResult => {
+          const result = dialogResult;
+          if (result) {
+            this.loader = false;
+            this.router.navigate(['/patients', this.currentPatient.id, 'visits', 'add']);
+          }
+        });
+      });
     this.addNewlyAddedDiagnosis();
     this.addNewlyAddedObservations();
     this.addNewlyAddedKnownCases();
@@ -413,9 +429,10 @@ export class VisitAddComponent implements OnInit {
     if (scansAreNew != null) {
       this.commonService.addToPathology(scansAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   addNewlyAddedRadiology() {
@@ -429,9 +446,10 @@ export class VisitAddComponent implements OnInit {
     if (scansAreNew != null) {
       this.commonService.addToRadiology(scansAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   addNewlyAddedKnownCases() {
@@ -445,9 +463,10 @@ export class VisitAddComponent implements OnInit {
     if (complaintsAreNew != null) {
       this.commonService.addToComplaints(complaintsAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   addNewlyAddedObservations() {
@@ -461,9 +480,10 @@ export class VisitAddComponent implements OnInit {
     if (observationsAreNew != null) {
       this.commonService.addToObservations(observationsAreNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   addNewlyAddedDiagnosis() {
@@ -477,9 +497,10 @@ export class VisitAddComponent implements OnInit {
     if (diagnosisNew != null) {
       this.commonService.addToDiagnosisDictionary(diagnosisNew).subscribe(
         newlyAdded => {
-        },
-        error => this.errorMessage = error as any
-      );
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = error as any
+        });
     }
   }
   goToVisitDetails() {

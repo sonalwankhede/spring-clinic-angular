@@ -20,13 +20,14 @@
  * @author Sonal Wankhede
  */
 
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MatPaginator } from '@angular/material'
 import { PatientService } from '../patient.service';
 import { Patient } from '../patient';
 import { Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material';
 import { ConfirmDialogComponent } from '../../common-component/dialog/confirm-dialog/confirm-dialog.component';
+import { AlertDialogComponent } from '../../common-component/dialog/alert-dialog/alert-dialog.component';
 import { ConfirmDialogModel } from '../../common-component/dialog/confirm-dialog/confirm-dialog.component';
 import { ViewChild } from '@angular/core';
 import { TableUtil } from '../../util/table-data-util';
@@ -42,12 +43,13 @@ export class PatientListComponent implements OnInit {
   dataSource = new MatTableDataSource<Patient>();
   showTable: boolean = false;
 
-  @ViewChild(MatPaginator,  {static: false}) set matPaginator(paginator: MatPaginator) {
+  @ViewChild(MatPaginator, { static: false }) set matPaginator(paginator: MatPaginator) {
     this.dataSource.paginator = paginator;
-}
+  }
   public displayedColumns = ['name', 'gender', 'age', 'address', 'telephone', 'update', 'delete'];
 
   dialogRef: MatDialogRef<ConfirmDialogComponent>;
+  dialogRefAlert: MatDialogRef<AlertDialogComponent>;
   loader: boolean;
 
   constructor(private router: Router, private patientService: PatientService,
@@ -63,13 +65,24 @@ export class PatientListComponent implements OnInit {
         this.dataSource.data = patients as Patient[];
         this.showTable = true;
         this.loader = false;
-      },
-      (error) => {
-        this.patients = [];
-        this.dataSource = new MatTableDataSource<Patient>();
-        this.loader = false;
-        console.log(error);
-      });
+    }, (error) => {
+      this.patients = [];
+      this.dataSource = new MatTableDataSource<Patient>();
+      this.loader = false;
+      this.errorMessage = 'There was an issue while this patient list or no patients in the system. Please try adding a new patient';
+      console.log(this.errorMessage);
+      console.log(error);
+      // const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+      // this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+      //   data: dialogData
+      // });
+      // this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+      //   const result = dialogResult;
+      //   if (result) {
+      //     this.loader = false;
+      //   }
+      // });
+    });
   }
   custom() {
     const ELEMENT_DATA = [];
@@ -123,6 +136,21 @@ export class PatientListComponent implements OnInit {
         this.patientService.deletePatient(patientId).subscribe(res => {
           this.loader = false;
           this.ngOnInit();
+        }, (error) => {
+          this.patients = [];
+          this.dataSource = new MatTableDataSource<Patient>();
+          console.log(error);
+          this.errorMessage = 'There was an issue while this deleting patient. Please retry';
+          const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+          this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+            data: dialogData
+          });
+          this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+            const result = dialogResult;
+            if (result) {
+              this.router.navigate(['/patients']);
+            }
+          });
         });
       }
     });
@@ -133,3 +161,5 @@ export class PatientListComponent implements OnInit {
     this.dataSource.filter = filterValue;
   }
 }
+
+

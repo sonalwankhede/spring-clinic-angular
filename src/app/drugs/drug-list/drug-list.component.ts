@@ -29,6 +29,7 @@ import { ConfirmDialogComponent, ConfirmDialogModel } from 'app/common-component
 import { TableUtil } from '../../util/table-data-util';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MultiPurposeDialogComponent, MultiPurposeConfirmDialogModel } from 'app/common-component/dialog/multi-purpose-dialog/multi-purpose-dialog.component';
+import { AlertDialogComponent } from 'app/common-component/dialog/alert-dialog/alert-dialog.component';
 
 @Component({
   selector: 'app-drug-list',
@@ -47,6 +48,7 @@ export class DrugListComponent implements OnInit {
   exporting: boolean;
   brandNameFilter: string;
   contentFilter: string;
+  dialogRefAlert: MatDialogRef<AlertDialogComponent>;
 
   @ViewChild(MatPaginator, { static: false }) set matPaginator(paginator: MatPaginator) {
     this.dataSource.paginator = paginator;
@@ -93,6 +95,19 @@ export class DrugListComponent implements OnInit {
         this.dataSource = new MatTableDataSource<Drug>();
         this.loader = false;
         console.log(error);
+        this.errorMessage = 'There was an issue while fetching drugs list or no drugs in the system. Please try adding a new drug.';
+        console.log(this.errorMessage);
+        // const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+        // this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+        //   data: dialogData
+        // });
+        // this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+        //   const result = dialogResult;
+        //   if (result) {
+        //     this.loader = false;
+        //     this.clearFilters();
+        //   }
+        // });
       });
   }
   clearFilters() {
@@ -142,6 +157,20 @@ export class DrugListComponent implements OnInit {
         this.drugService.deleteDrugs(data).subscribe(res => {
           this.selection.clear();
           this.ngOnInit();
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = 'There was an issue while deleting drug(s). Please retry';
+          const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+          this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+            data: dialogData
+          });
+          this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+            const result = dialogResult;
+            if (result) {
+              this.clearFilters();
+              this.router.navigate(['/drugs']);
+            }
+          });
         });
       }
     });
@@ -165,6 +194,20 @@ export class DrugListComponent implements OnInit {
         this.drugService.updateDrugs(data, selectedField, newValue).subscribe(res => {
           this.selection.clear();
           this.ngOnInit();
+        }, (error) => {
+          console.log(error);
+          this.errorMessage = 'There was an issue while updating drug(s). Please retry';
+          const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+          this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+            data: dialogData
+          });
+          this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+            const result = dialogResult;
+            if (result) {
+              this.clearFilters();
+              this.router.navigate(['/drugs']);
+            }
+          });
         });
       }
     });
@@ -210,13 +253,23 @@ export class DrugListComponent implements OnInit {
         this.drugService.deleteDrug(drugId).subscribe(response => {
           this.loader = false;
           this.ngOnInit();
-        },
-          (error) => {
-            this.drugs = [];
-            this.dataSource = new MatTableDataSource<Drug>();
-            this.loader = false;
-            console.log(error);
+        }, (error) => {
+          this.drugs = [];
+          this.dataSource = new MatTableDataSource<Drug>();
+          console.log(error);
+          this.errorMessage = 'There was an issue while deleting drug(s). Please retry';
+          const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+          this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
+            data: dialogData
           });
+          this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
+            const result = dialogResult;
+            if (result) {
+              this.clearFilters();
+              this.router.navigate(['/drugs']);
+            }
+          });
+        });
       }
     });
   }

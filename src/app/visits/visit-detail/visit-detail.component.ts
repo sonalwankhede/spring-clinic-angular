@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Patient } from 'app/patients/patient';
 import { ActivatedRoute, Router } from 'app/testing/router-stubs';
-import { MatTableDataSource } from '@angular/material';
+import { MatDialog, MatDialogRef, MatTableDataSource } from '@angular/material';
 import { Visit } from '../visit';
 import { VisitService } from '../visit.service';
 import { PrescriptionUtil } from './prescription-util';
@@ -11,10 +11,11 @@ import html2canvas from 'html2canvas';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-import htmlToPdfmake from 'html-to-pdfmake';
 import { ViewChild } from '@angular/core';
 import { ElementRef } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { AlertDialogComponent } from 'app/common-component/dialog/alert-dialog/alert-dialog.component';
+import { ConfirmDialogModel } from 'app/common-component/dialog/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-visit-detail',
@@ -30,6 +31,7 @@ export class VisitDetailComponent implements OnInit {
   updateSuccess = false;
   errorMessage: string;
   dataSourceVisit = new MatTableDataSource<Visit>();
+  dialogRef: MatDialogRef<AlertDialogComponent>;
 
   displayedColumns: string[] = ['name', 'age', 'gender', 'knownCaseOf', 'drugAllergies',
     'otherAllergies', 'vitals', 'complaints', 'observations', 'diagnosis', 'drug', 'dose', 'duration', 'instructions'];
@@ -37,7 +39,8 @@ export class VisitDetailComponent implements OnInit {
   visitdate: string;
   loader: boolean;
 
-  constructor(private visitService: VisitService, private route: ActivatedRoute, private router: Router, public datepipe: DatePipe) {
+  constructor(private visitService: VisitService, private route: ActivatedRoute, private router: Router, public dialog: MatDialog,
+    public datepipe: DatePipe) {
     this.visit = {} as Visit;
     this.currentPatient = {} as Patient;
   }
@@ -54,8 +57,21 @@ export class VisitDetailComponent implements OnInit {
         this.dataSourceVisit.data = this.visit as unknown as Visit[];
         this.showTable = true;
         this.visitdate = this.datepipe.transform(this.visit.visitDate, 'dd   MM   yyyy');
-      },
-      error => this.errorMessage = error as any);
+      }, (error) => {
+        console.log(error);
+        this.errorMessage = 'There was an issue fetching visit details. Please retry';
+        const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
+        this.dialogRef = this.dialog.open(AlertDialogComponent, {
+          data: dialogData
+        });
+        this.dialogRef.afterClosed().subscribe(dialogResult => {
+          const result = dialogResult;
+          if (result) {
+            this.loader = false;
+            this.router.navigate(['/patients/' + this.currentPatient.id, 'visits/add',]);
+          }
+        });
+      });
   }
 
   exportTable() {

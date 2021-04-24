@@ -22,9 +22,13 @@
 
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
+import { ComplaintsComponent } from './complaints/complaints/complaints.component';
+import { DrugAllergiesComponent } from './drug-allergies/drug-allergies/drug-allergies.component';
 import { DrugAddComponent } from './drugs/drug-add/drug-add.component';
 import { DrugEditComponent } from './drugs/drug-edit/drug-edit.component';
 import { DrugListComponent } from './drugs/drug-list/drug-list.component';
+import { KnownCaseComponent } from './known-case/known-case/known-case.component';
+import { OtherAllergiesComponent } from './other-allergies/other-allergies/other-allergies.component';
 import {PageNotFoundComponent} from './parts/page-not-found/page-not-found.component';
 import {WelcomeComponent} from './parts/welcome/welcome.component';
 import { PathologyComponent } from './pathology/pathology/pathology.component';
@@ -32,6 +36,7 @@ import { PatientAddComponent } from './patients/patient-add/patient-add.componen
 import { PatientDetailComponent } from './patients/patient-detail/patient-detail.component';
 import { PatientEditComponent } from './patients/patient-edit/patient-edit.component';
 import { PatientListComponent } from './patients/patient-list/patient-list.component';
+import { PreliminaryDiagnosisComponent } from './preliminary-diagnosis/preliminary-diagnosis/preliminary-diagnosis.component';
 import { RadiologyComponent } from './radiology/radiology/radiology.component';
 import { VisitAddComponent } from './visits/visit-add/visit-add.component';
 import { VisitEditComponent } from './visits/visit-edit/visit-edit.component';
@@ -56,6 +61,11 @@ const appRoutes: Routes = [
 
   {path: 'pathology', component: PathologyComponent},
   {path: 'radiology', component: RadiologyComponent},
+  {path: 'drugAllergies', component: DrugAllergiesComponent},
+  {path: 'otherAllergies', component: OtherAllergiesComponent},
+  {path: 'complaints', component: ComplaintsComponent},
+  {path: 'preliminaryDiagnosis', component: PreliminaryDiagnosisComponent},
+  {path: 'knownCase', component: KnownCaseComponent},
 
   {path: '**', component: PageNotFoundComponent}
 ];
