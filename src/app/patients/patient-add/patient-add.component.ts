@@ -103,7 +103,10 @@ export class PatientAddComponent implements OnInit {
         this.separteOutStringFromObject(results[2], 'issues', this.caseList);
         this.showLists = true;
       }
-    )
+    ), (error => {
+      console.log(error);
+      this.showLists = true;
+    });
   }
   checkIfFormIsValid(): boolean {
     return this.patientForm.valid && this.finalDrugAllergiesList.length != 0 &&
@@ -181,7 +184,7 @@ export class PatientAddComponent implements OnInit {
       casesAreNew.push(tempHistory);
     }
     if (casesAreNew != null) {
-      this.commonService.addToComplaints(casesAreNew).subscribe(
+      this.commonService.addToKnownCase(casesAreNew).subscribe(
         newlyAdded => {
         }, (error) => {
           console.log(error);

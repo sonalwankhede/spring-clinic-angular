@@ -26,12 +26,14 @@ import {FormsModule} from '@angular/forms';
 import {PageNotFoundComponent} from './page-not-found/page-not-found.component';
 import {WelcomeComponent} from './welcome/welcome.component';
 import { LoginModule } from '../login/login.module';
+import { RegisterationModule } from '../registeration/registeration.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
-    LoginModule
+    LoginModule,
+    RegisterationModule
   ],
   declarations: [
     PageNotFoundComponent,

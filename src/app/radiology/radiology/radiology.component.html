@@ -12,7 +12,7 @@
       font-size: 12px;
       vertical-align: middle;
       margin-right: 5px;
-      margin-bottom: 5px;" (click)="save()" *ngIf="!textareaRadiology.disabled">
+      margin-bottom: 5px;" (click)="save()" *ngIf="!textareaRadiology.disabled && !showError">
         <mat-icon>save_alt</mat-icon>
         Save Changes
       </button>
@@ -28,6 +28,7 @@
       <form class="example-container" #options="ngForm">
         <textarea matInput name="radiology" [formControl]="textareaRadiology" style="min-width: 1000px;border: groove;
         min-height: 300px;" cols="35" rows="8" placeholder="Added Pathological Tests"></textarea>
+        <mat-error *ngIf= "showError">Radiology scans list can not be empty</mat-error>
       </form>
     </div>
     <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>

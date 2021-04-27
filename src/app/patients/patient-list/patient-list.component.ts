@@ -72,16 +72,6 @@ export class PatientListComponent implements OnInit {
       this.errorMessage = 'There was an issue while this patient list or no patients in the system. Please try adding a new patient';
       console.log(this.errorMessage);
       console.log(error);
-      // const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
-      // this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
-      //   data: dialogData
-      // });
-      // this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
-      //   const result = dialogResult;
-      //   if (result) {
-      //     this.loader = false;
-      //   }
-      // });
     });
   }
   custom() {

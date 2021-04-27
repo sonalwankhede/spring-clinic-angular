@@ -75,16 +75,6 @@ export class VisitListComponent implements AfterViewInit {
         console.log(error);
         this.errorMessage = 'There are either no previous visits for this patient or an issue occurred while fetching them. Please try adding new visit.';
         console.log(this.errorMessage);
-        // const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
-        // this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
-        //   data: dialogData
-        // });
-        // this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
-        //   const result = dialogResult;
-        //   if (result) {
-        //     this.loader = false;
-        //   }
-        // });
       });
     this.dataSource.paginator = this.paginator;
   }

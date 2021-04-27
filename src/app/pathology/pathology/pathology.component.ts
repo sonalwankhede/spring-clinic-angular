@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CommonService } from 'app/common.service';
-import { Observable, of, forkJoin} from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-pathology',
@@ -15,17 +15,20 @@ export class PathologyComponent implements OnInit {
   pathology: string;
 
   textareaPathology = new FormControl({ value: null, disabled: true });
+  showError: boolean;
 
   constructor(private commonService: CommonService) {
     this.loader = false;
     this.editable = false;
+    this.showError = false;
+    this.pathology = '';
   }
 
   ngOnInit() {
     this.loader = true;
-    this.commonService.getPathology().subscribe (res=> {
-      if(res) {
-        const data = res.map(function(a) {return a.pathology;});
+    this.commonService.getPathology().subscribe(res => {
+      if (res) {
+        const data = res.map(function (a) { return a.pathology; });
         this.pathology = data.toString();
         this.textareaPathology.setValue(data.toString());
         this.textareaPathology.disable();
@@ -43,12 +46,17 @@ export class PathologyComponent implements OnInit {
     }
   }
   save() {
-    this.loader = true;
-    this.textareaPathology.disable();
-    forkJoin([this.addToList(),
-    this.deleteToList()]).subscribe(res => {
-      this.ngOnInit();
-    });
+    if (this.textareaPathology && this.textareaPathology.value && this.textareaPathology.value !== null) {
+      this.loader = true;
+      this.textareaPathology.disable();
+      this.showError = false;
+      forkJoin([this.addToList(),
+      this.deleteToList()]).subscribe(res => {
+        this.ngOnInit();
+      });
+    } else {
+      this.showError = true;
+    }
   }
   deleteToList(): Observable<any> {
     let removedPathologyScan = this.pathology.split(',').filter(x => !this.textareaPathology.value.split(',').includes(x));

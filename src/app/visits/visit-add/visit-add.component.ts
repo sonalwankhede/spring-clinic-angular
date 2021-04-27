@@ -75,9 +75,9 @@ export class VisitAddComponent implements OnInit {
   diagnosisList: string[];
   tempIssueList: string[];
   diagnosisDictionary: any;
-  issuesResponse: String[];
+  complaintsResponse: String[];
   showDiagnosis = false;
-  showHealthIssues = false;
+  showHealthComplaints = false;
   showDrugs = false;
 
   drugsList = [];
@@ -284,19 +284,23 @@ export class VisitAddComponent implements OnInit {
       }, (error) => {
         this.errorMessage = error as any;
       });
-    forkJoin([this.commonService.getDiagnosisDictionary(),
-    this.commonService.getKnownCase(),
-    this.commonService.getAllObservations(),
-    this.commonService.getPathology(),
-    this.commonService.getRadiology()]).subscribe(
-      results => {
-        this.separteOutStringFromObject(results[0], 'diagnosis', this.diagnosisList);
-        this.separteOutStringFromObject(results[1], 'issues', this.complaintsList);
-        this.separteOutStringFromObject(results[2], 'observations', this.observationsList);
-        this.separteOutStringFromObject(results[3], 'pathology', this.pathologyList);
-        this.separteOutStringFromObject(results[4], 'radiology', this.radiologyList);
-        this.showDrugs = true;
-      });
+    forkJoin([
+      this.commonService.getDiagnosisDictionary(),
+      this.commonService.getAllComplaints(),
+      this.commonService.getAllObservations(),
+      this.commonService.getPathology(),
+      this.commonService.getRadiology()]).subscribe(
+        results => {
+          this.separteOutStringFromObject(results[0], 'diagnosis', this.diagnosisList);
+          this.separteOutStringFromObject(results[1], 'complaints', this.complaintsList);
+          this.separteOutStringFromObject(results[2], 'observations', this.observationsList);
+          this.separteOutStringFromObject(results[3], 'pathology', this.pathologyList);
+          this.separteOutStringFromObject(results[4], 'radiology', this.radiologyList);
+          this.showDrugs = true;
+        }), (error => {
+          console.log(error);
+          this.showDrugs = true;
+        });;
     this.drugService.getDrugs().subscribe(result => {
       for (let obj of result) {
         delete obj.id;
@@ -345,27 +349,7 @@ export class VisitAddComponent implements OnInit {
     for (let key in resultList) {
       arrayToBePushedTo.push(resultList[key][field]);
     }
-  }
-  addObservations() {
-    for (let key in this.observationsResponse) {
-      const value = this.observationsResponse[key];
-      this.observationsList.push(value['observations']);
-    }
-  }
-  addDiagnosis(): void {
-    for (let key in this.diagnosisDictionary) {
-      const value = this.diagnosisDictionary[key];
-      this.diagnosisList.push(value.diagnosis);
-    }
-    this.showDiagnosis = true;
-  }
-
-  addIssues(): void {
-    for (let key in this.issuesResponse) {
-      const value = this.issuesResponse[key];
-      this.complaintsList.push(value['issues']);
-    }
-    this.showHealthIssues = true;
+    arrayToBePushedTo.sort((a, b) => (a > b) ? 1 : ((b > a) ? -1 : 0))
   }
 
   onSubmit(visit: Visit) {
@@ -414,7 +398,7 @@ export class VisitAddComponent implements OnInit {
       });
     this.addNewlyAddedDiagnosis();
     this.addNewlyAddedObservations();
-    this.addNewlyAddedKnownCases();
+    this.addNewlyAddedComplaints();
     this.addNewlyAddedPathology();
     this.addNewlyAddedRadiology();
   }
@@ -452,12 +436,12 @@ export class VisitAddComponent implements OnInit {
         });
     }
   }
-  addNewlyAddedKnownCases() {
+  addNewlyAddedComplaints() {
     const newlyAddedComplaints = this.finalComplaintsList.filter(x => !this.complaintsList.includes(x));
     const complaintsAreNew = [];
     for (let key in newlyAddedComplaints) {
       const tempObservation = {};
-      tempObservation['issues'] = newlyAddedComplaints[key];
+      tempObservation['complaints'] = newlyAddedComplaints[key];
       complaintsAreNew.push(tempObservation);
     }
     if (complaintsAreNew != null) {

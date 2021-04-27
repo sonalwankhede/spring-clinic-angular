@@ -155,7 +155,7 @@ export class PatientEditComponent implements OnInit {
       casesAreNew.push(tempHistory);
     }
     if (casesAreNew != null) {
-      this.commonService.addToComplaints(casesAreNew).subscribe(
+      this.commonService.addToKnownCase(casesAreNew).subscribe(
         newlyAdded => {
         }, (error) => {
           console.log(error);

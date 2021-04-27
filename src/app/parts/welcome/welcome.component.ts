@@ -22,6 +22,7 @@
  */
 
 import {Component, OnInit} from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-welcome',
@@ -30,10 +31,21 @@ import {Component, OnInit} from '@angular/core';
 })
 export class WelcomeComponent implements OnInit {
 
-  constructor() {
+  constructor(private router: Router) {
+
   }
 
-  ngOnInit() {
+  openRegistrationForm: boolean = false;
+
+  ngOnInit(): void {
   }
 
+  hasUserLoggedIn(): boolean {
+    if (localStorage.getItem('username') && localStorage.getItem('token')) {
+      return true;
+    }
+  }
+  redirectToRegisterationForm(event) {
+    this.openRegistrationForm = event;
+  }
 }

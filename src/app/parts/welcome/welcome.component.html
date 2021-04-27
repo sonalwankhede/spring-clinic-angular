@@ -17,14 +17,21 @@
   -->
 <div style="margin: 10px;">
   <br>
-  <!-- <marquee>
-    <h1 style="padding-left: 20px;">Welcome to Dr. Snehal AyuCare Clinic</h1>
-  </marquee> -->
-  <img class="img-responsive padding-top"
-    style="width: 100%; height: 90%; align-content: center;   z-index: 1;  position: absolute;"
-    src="./assets/images/homepage.jpg" alt="clinic logo" />
-  <div style="text-align: end;">
-    <app-login style="  z-index: 1001;  position: absolute; top: 25px;
-    right: 0; "></app-login>
+  <div class="padding-top">
+    <marquee *ngIf="hasUserLoggedIn()" scrollamount="2" onmouseover=this.stop();>
+      <h3 style="padding-left: 20px;">Welcome to Dr. Snehal AyuCare Clinic</h3>
+    </marquee>
+    <!-- </div>
+  <div style="padding-top: 15px;"> -->
+    <img class="img-responsive"
+      style="width: 100%; height: 90%; align-content: center;   z-index: 1;  position: absolute;"
+      src="./assets/images/homepage.jpg" alt="clinic logo" />
+    <div style="text-align: end;">
+      <app-login *ngIf="!hasUserLoggedIn() && !openRegistrationForm" class="login-register"
+        (isRegister)="redirectToRegisterationForm($event)"></app-login>
+
+      <!-- <app-registeration *ngIf="openRegistrationForm" class="login-register" style="margin-top: 85px;"
+        (isLogin)="redirectToRegisterationForm(!$event)"></app-registeration> -->
+    </div>
   </div>
 </div>

@@ -4,8 +4,8 @@ import {
     MatSelectModule, MatIconModule, MatCardModule, MatDatepickerModule, MatRadioModule
 } from '@angular/material';
 import { MatTableModule } from '@angular/material';
-import { LoginComponent } from './login/login.component';
 import {FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RegisterationComponent } from './registeration/registeration.component';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
@@ -26,11 +26,11 @@ import { CommonModule } from '@angular/common';
         MatProgressSpinnerModule
     ],
     declarations: [
-        LoginComponent
+       RegisterationComponent
     ],
     exports: [
-        LoginComponent
+        RegisterationComponent
     ]
 })
-export class LoginModule {
+export class RegisterationModule {
 }

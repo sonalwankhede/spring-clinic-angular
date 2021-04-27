@@ -15,17 +15,20 @@ export class DrugAllergiesComponent implements OnInit {
   drugAllergies: string;
 
   textareaDrugAllergies = new FormControl({ value: null, disabled: true });
+  showError: boolean;
 
   constructor(private commonService: CommonService) {
     this.loader = false;
     this.editable = false;
+    this.showError = false;
+    this.drugAllergies = '';
   }
 
   ngOnInit() {
     this.loader = true;
-    this.commonService.getDrugAllergies().subscribe (res=> {
-      if(res) {
-        const data = res.map(function(a) {return a['allergy'];});
+    this.commonService.getDrugAllergies().subscribe(res => {
+      if (res) {
+        const data = res.map(function (a) { return a['allergy']; });
         this.drugAllergies = data.toString();
         this.textareaDrugAllergies.setValue(data.toString());
         this.textareaDrugAllergies.disable();
@@ -43,12 +46,17 @@ export class DrugAllergiesComponent implements OnInit {
     }
   }
   save() {
-    this.loader = true;
-    this.textareaDrugAllergies.disable();
-    forkJoin([this.addToList(),
-    this.deleteToList()]).subscribe(res => {
-      this.ngOnInit();
-    });
+    if (this.textareaDrugAllergies && this.textareaDrugAllergies.value && this.textareaDrugAllergies.value !== null) {
+      this.loader = true;
+      this.textareaDrugAllergies.disable();
+      this.showError = false;
+      forkJoin([this.addToList(),
+      this.deleteToList()]).subscribe(res => {
+        this.ngOnInit();
+      });
+    } else {
+      this.showError = true;
+    }
   }
   deleteToList(): Observable<any> {
     let removedDrugAllergiesScan = this.drugAllergies.split(',').filter(x => !this.textareaDrugAllergies.value.split(',').includes(x));

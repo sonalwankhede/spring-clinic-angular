@@ -20,13 +20,44 @@
  * @author Sonal Wankhede
  */
 
-import {Component} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthenticationService } from './service/authentication.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
+  constructor(private authService: AuthenticationService, private router: Router) {
+
+  }
+  ngOnInit(): void {
+    window.addEventListener('storage', (event) => {
+      if (event.storageArea == localStorage) {
+        let token = localStorage.getItem('token');
+        if (token == undefined) { // you can update this as per your key
+          // DO LOGOUT FROM THIS TAB AS WELL
+          this.router.navigate(['/']); // If you are using router
+          // OR
+          window.location.href = '';
+        }
+      }
+    }, false);
+  }
+
+  hasUserLoggedIn(): boolean {
+    if (localStorage.getItem('username') && localStorage.getItem('token')) {
+      return true;
+    }
+  }
+  logOut() {
+    window.localStorage.clear();
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    this.router.navigate(['/welcome']);
+    localStorage.clear();
+  }
 }

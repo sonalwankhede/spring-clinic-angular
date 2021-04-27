@@ -36,7 +36,7 @@ export class VisitService {
   private readonly handlerError: HandleError;
 
   constructor(private http: HttpClient, private httpErrorHandler: HttpErrorHandler) {
-    this.handlerError = httpErrorHandler.createHandleError('PatientService');
+    this.handlerError = httpErrorHandler.createHandleError('VisitService');
   }
 
   getVisits(): Observable<Visit[]> {

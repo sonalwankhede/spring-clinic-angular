@@ -6,3 +6,10 @@
   overflow-y: scroll;
   height: 150px !important;;
 }
+mat-option.mat-option{
+  position: relative;
+  height: 24px!important;
+  line-height: 24px!important;
+  max-height: 24px!important;
+}
+::ng-deep .cdk-overlay-pane{ max-height: 150px!important;}

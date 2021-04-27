@@ -50,7 +50,7 @@
         Update Selected
       </button>
     </div>
-    <div *ngIf="!drugs.length > 0 && !loader" style="text-align: center; ">No Drugs Found In The System. Please
+    <div *ngIf="!(drugs.length !== 0) && !loader" style="text-align: center; ">No Drugs Found In The System. Please
       <a (click)="addDrug()" style="cursor: pointer !important;"> Add New Drug(s)</a>.
     </div>
 

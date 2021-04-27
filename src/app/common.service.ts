@@ -35,7 +35,25 @@ export class CommonService {
   private readonly handlerError: HandleError;
 
   constructor(private http: HttpClient, private httpErrorHandler: HttpErrorHandler) {
-    this.handlerError = httpErrorHandler.createHandleError('PatientService');
+    this.handlerError = httpErrorHandler.createHandleError('CommonService');
+  }
+  addUser(username: any, password: any, enable: number, roles: any) {
+    const requestPayload = {
+      username: username,
+      password: password,
+      enabled: true,
+      roles: [
+        {
+          id: null,
+          name: roles[0]
+        }
+      ]
+    }
+    return this.http
+      .post<any>("http://drsnehalayucare.us-east-2.elasticbeanstalk.com/clinic/users", requestPayload)
+      .pipe(
+        catchError(this.handlerError('addUser', []))
+      );
   }
 
   getDrugAllergies(): Observable<string[]> {
@@ -70,6 +88,12 @@ export class CommonService {
         catchError(this.handlerError('getAllObservations', []))
       );
   }
+  getAllComplaints(): Observable<string[]> {
+    return this.http.get<string[]>(environment.REST_API_URL + 'complaints')
+      .pipe(
+        catchError(this.handlerError('getAllComplaints', []))
+      );
+  }
   addToDiagnosisDictionary(newDiagnosisList): Observable<any[]> {
     return this.http.post<any[]>(environment.REST_API_URL + 'diagnosisDictionary', newDiagnosisList)
       .pipe(
@@ -98,10 +122,10 @@ export class CommonService {
         )
       );
   }
-  addToComplaints(complaintsAreNew: any[]) {
-    return this.http.post<any[]>(environment.REST_API_URL + 'knownCases', complaintsAreNew)
+  addToKnownCase(knownCasesAreNew: any[]) {
+    return this.http.post<any[]>(environment.REST_API_URL + 'knownCases', knownCasesAreNew)
       .pipe(
-        catchError(this.handlerError('addToComplaints', complaintsAreNew)
+        catchError(this.handlerError('addToKnownCase', knownCasesAreNew)
         )
       );
   }
@@ -154,16 +178,52 @@ export class CommonService {
   }
   removeFromDrugAllergies(drugAllergiesRemoved: any[]): Observable<any> {
     return this.http.post<any[]>(environment.REST_API_URL + 'drugAllergies/delete', drugAllergiesRemoved)
-    .pipe(
-      catchError(this.handlerError('removeFromDrugAllergies', drugAllergiesRemoved)
-      )
-    );
+      .pipe(
+        catchError(this.handlerError('removeFromDrugAllergies', drugAllergiesRemoved)
+        )
+      );
   }
   removeFromOtherAllergies(otherAllergiesRemoved: any[]): Observable<any> {
     return this.http.post<any[]>(environment.REST_API_URL + 'otherAllergies/delete', otherAllergiesRemoved)
+      .pipe(
+        catchError(this.handlerError('removeFromDrugAllergies', otherAllergiesRemoved)
+        )
+      );
+  }
+  removeFromObservations(observationsAreRemoved: any[]): Observable<any> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'observations/delete', observationsAreRemoved)
+      .pipe(
+        catchError(this.handlerError('removeFromObservations', observationsAreRemoved)
+        )
+      );
+  }
+  addToComplaints(complaintsAreNew: any[]) {
+    return this.http.post<any[]>(environment.REST_API_URL + 'complaints', complaintsAreNew)
+      .pipe(
+        catchError(this.handlerError('addToComplaints', complaintsAreNew)
+        )
+      );
+  }
+  removeFromComplaints(complaintsAreRemoved: any[]): Observable<any> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'complaints/delete', complaintsAreRemoved)
+      .pipe(
+        catchError(this.handlerError('removeFromComplaints', complaintsAreRemoved)
+        )
+      );
+  }
+  removeFromDiagnosis(diagnosisAreRemoved: any[]): Observable<any> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'diagnosis/delete', diagnosisAreRemoved)
+      .pipe(
+        catchError(this.handlerError('removeFromComplaints', diagnosisAreRemoved)
+        )
+      );
+  }
+  removeFromKnownCases(knownCasesAreRemoved: any[]): Observable<any> {
+    return this.http.post<any[]>(environment.REST_API_URL + 'knownCases/delete', knownCasesAreRemoved)
     .pipe(
-      catchError(this.handlerError('removeFromDrugAllergies', otherAllergiesRemoved)
+      catchError(this.handlerError('removeFromKnownCases', knownCasesAreRemoved)
       )
     );
   }
+
 }

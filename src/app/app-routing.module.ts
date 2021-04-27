@@ -28,6 +28,7 @@ import { DrugAddComponent } from './drugs/drug-add/drug-add.component';
 import { DrugEditComponent } from './drugs/drug-edit/drug-edit.component';
 import { DrugListComponent } from './drugs/drug-list/drug-list.component';
 import { KnownCaseComponent } from './known-case/known-case/known-case.component';
+import { ObservationsComponent } from './observations/observations/observations.component';
 import { OtherAllergiesComponent } from './other-allergies/other-allergies/other-allergies.component';
 import {PageNotFoundComponent} from './parts/page-not-found/page-not-found.component';
 import {WelcomeComponent} from './parts/welcome/welcome.component';
@@ -66,6 +67,7 @@ const appRoutes: Routes = [
   {path: 'complaints', component: ComplaintsComponent},
   {path: 'preliminaryDiagnosis', component: PreliminaryDiagnosisComponent},
   {path: 'knownCase', component: KnownCaseComponent},
+  {path: 'observations', component: ObservationsComponent},
 
   {path: '**', component: PageNotFoundComponent}
 ];

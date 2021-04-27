@@ -97,17 +97,6 @@ export class DrugListComponent implements OnInit {
         console.log(error);
         this.errorMessage = 'There was an issue while fetching drugs list or no drugs in the system. Please try adding a new drug.';
         console.log(this.errorMessage);
-        // const dialogData = new ConfirmDialogModel("Error", this.errorMessage);
-        // this.dialogRefAlert = this.dialog.open(AlertDialogComponent, {
-        //   data: dialogData
-        // });
-        // this.dialogRefAlert.afterClosed().subscribe(dialogResult => {
-        //   const result = dialogResult;
-        //   if (result) {
-        //     this.loader = false;
-        //     this.clearFilters();
-        //   }
-        // });
       });
   }
   clearFilters() {

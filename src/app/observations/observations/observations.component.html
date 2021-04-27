@@ -1,17 +1,17 @@
 <section class="parent padding-top">
   <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;">
-    <mat-card-title style="background-color: skyblue; ">Other Allergies Details
+    <mat-card-title style="background-color: skyblue; ">Observations Details
     </mat-card-title>
     <div *ngIf="!loader" style="
     display: inline-block;
-    margin-top: 15px;"><i>(Please add new tests with comma separation.)</i></div>
+    margin-top: 15px;"><i>(Please add new observations with comma separation.)</i></div>
     <div style="display: inline-block; float: right;" *ngIf="!loader">
       <button mat-raised-button style="background-color: green;
       color: white;
       font-size: 12px;
       vertical-align: middle;
       margin-right: 5px;
-      margin-bottom: 5px;" (click)="save()" *ngIf="!textareaOtherAllergies.disabled && !showError">
+      margin-bottom: 5px;" (click)="save()" *ngIf="!textareaObservations.disabled && !showError">
         <mat-icon>save_alt</mat-icon>
         Save Changes
       </button>
@@ -20,14 +20,14 @@
       margin-right: 5px;
       margin-bottom: 5px;" (click)="click()">
         <mat-icon>edit</mat-icon>
-        {{ textareaOtherAllergies.disabled ? 'Edit Other Allergies List' : 'No Need to Edit?' }}
+        {{ textareaObservations.disabled ? 'Edit Observations List' : 'No Need to Edit?' }}
       </button>
     </div>
     <div style="align-content: center;" [hidden]="loader">
       <form class="example-container" #options="ngForm">
-        <textarea matInput name="otherAllergies" [formControl]="textareaOtherAllergies" style="min-width: 1000px; border: groove;
-        min-height: 300px;" cols="35" rows="8" placeholder="Added Other Allergies Tests"></textarea>
-        <mat-error *ngIf="showError">Drug Allergies list can not be empty</mat-error>
+        <textarea matInput name="observations" [formControl]="textareaObservations" style="min-width: 1000px; border: groove;
+        min-height: 300px;" cols="35" rows="8" placeholder="Added Observations"></textarea>
+        <mat-error *ngIf="showError">Observations list can not be empty</mat-error>
       </form>
     </div>
     <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>

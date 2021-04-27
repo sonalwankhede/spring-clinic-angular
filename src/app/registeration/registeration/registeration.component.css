@@ -7,7 +7,7 @@
   .mat-form-field {
     align-content: center;
     width: 100%;
-    min-width: 100px;
+    min-width: 200px;
   }
 
   mat-card-title,
@@ -18,7 +18,7 @@
 
   .error {
     padding: 16px;
-    width: 100px;
+    width: 200px;
     color: white;
     background-color: red;
   }
@@ -28,23 +28,12 @@
     justify-content: flex-end;
   }
   .example-full-width {
-    width: 300px;
-    padding-right: 10px;
-    padding-left: 10px;
+    width: 450px;
   }
-  .spinner-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .example-additional-selection {
+    opacity: 0.75;
+    font-size: 0.75em;
   }
-  
-  .button-container {
-    display: inline-block;
-    position: relative;
-  } 
+  .cdk-global-overlay-wrapper, .cdk-overlay-container {
+    z-index: 1002 !important;
+    }

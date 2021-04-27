@@ -19,11 +19,11 @@
 /**
  * @author Sonal Wankhede
  */
-
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { PatientsModule } from './patients/patients.module';
@@ -37,7 +37,7 @@ import { HttpErrorHandler } from './error.service';
 import { CommonService } from './common.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AllergyAddComponent } from './allergies/allergy-add/allergy-add.component';
-import {DatePipe} from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { PrescriptionsAddComponent } from './prescriptions/prescriptions-add/prescriptions-add.component';
 import {
   MatInputModule, MatSliderModule, MatFormFieldModule, MatButtonModule, MatSortModule, MatCheckboxModule,
@@ -56,6 +56,9 @@ import { OtherAllergiesComponent } from './other-allergies/other-allergies/other
 import { ComplaintsComponent } from './complaints/complaints/complaints.component';
 import { PreliminaryDiagnosisComponent } from './preliminary-diagnosis/preliminary-diagnosis/preliminary-diagnosis.component';
 import { KnownCaseComponent } from './known-case/known-case/known-case.component';
+import { BasicAuthHtppInterceptorService } from './service/basic-authentication-interceptor.service';
+import { RegisterationModule } from './registeration/registeration.module';
+import { ObservationsComponent } from './observations/observations/observations.component';
 
 @NgModule({
   declarations: [
@@ -68,9 +71,11 @@ import { KnownCaseComponent } from './known-case/known-case/known-case.component
     OtherAllergiesComponent,
     ComplaintsComponent,
     PreliminaryDiagnosisComponent,
-    KnownCaseComponent
+    KnownCaseComponent,
+    ObservationsComponent
   ],
   imports: [
+    CommonModule,
     BrowserModule,
     FormsModule,
     HttpClientModule,
@@ -82,6 +87,7 @@ import { KnownCaseComponent } from './known-case/known-case/known-case.component
     SelectModule,
     ChipsModule,
     LoginModule,
+    RegisterationModule,
     DrugsModule,
     PartsModule,
     BrowserAnimationsModule,
@@ -106,7 +112,10 @@ import { KnownCaseComponent } from './known-case/known-case/known-case.component
   providers: [
     HttpErrorHandler,
     CommonService,
-    DatePipe
+    DatePipe,
+    {
+      provide: HTTP_INTERCEPTORS, useClass: BasicAuthHtppInterceptorService, multi: true
+    }
   ],
   exports: [
     MatFormFieldModule,

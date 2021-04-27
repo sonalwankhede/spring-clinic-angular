@@ -16,3 +16,9 @@
  *
  */
 
+.login-register {
+    z-index: 1001;  
+    position: absolute; 
+    top: 15px;
+    right: 0; 
+}

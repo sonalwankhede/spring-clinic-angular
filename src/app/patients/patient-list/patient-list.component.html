@@ -19,7 +19,7 @@
       <a (click)="addPatient()" style="cursor: pointer !important;"> Click to Add New Patient</a>.
     </div>
     <div>
-      <div style="align-content: center;" [hidden]="!showTable || loader ||  !patients.length > 0">
+      <div style="align-content: center;" [hidden]="!showTable || loader ||  !(patients.length !== 0)">
         <table mat-table style="width: 100%; " class="mat-elevation-z8" [dataSource]="dataSource">
           <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>

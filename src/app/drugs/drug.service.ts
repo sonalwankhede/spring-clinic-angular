@@ -37,7 +37,7 @@ export class DrugService {
   private readonly handlerError: HandleError;
 
   constructor(private http: HttpClient, private httpErrorHandler: HttpErrorHandler) {
-    this.handlerError = httpErrorHandler.createHandleError('PatientService');
+    this.handlerError = httpErrorHandler.createHandleError('DrugService');
   }
 
   getDrugs(): Observable<Drug[]> {

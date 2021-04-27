@@ -22,7 +22,7 @@
     <img class="img-responsive" style="height: 76px; display: inline-block; vertical-align: baseline;"
       src="./assets/images/Logo_Design_v1.0.png" alt="clinic logo" />
     <div class="container-fluid" style="display: inline-block">
-      <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav" *ngIf="hasUserLoggedIn()">
         <li>
           <a routerLink="welcome" title="home page">
             <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
@@ -80,6 +80,8 @@
                   Known Case</span></a></li>
             <li><a routerLink="/complaints"><span aria-hidden="true"></span><span>
                   Complaints</span></a></li>
+            <li><a routerLink="/observations"><span aria-hidden="true"></span><span>
+                  Observations</span></a></li>
             <li><a routerLink="/preliminaryDiagnosis"><span aria-hidden="true"></span><span>
                   Preliminary Diagnosis</span></a></li>
           </ul>
@@ -87,6 +89,15 @@
 
       </ul>
 
+    </div>
+    <div class="container-fluid" style="display: inline-block; float: right;">
+      <ul class="nav navbar-nav">
+        <li *ngIf="hasUserLoggedIn()">
+          <a routerLink="welcome" title="home page" (click)="logOut()">
+            <span>Log Out</span>
+          </a>
+        </li>
+      </ul>
     </div>
   </nav>
 

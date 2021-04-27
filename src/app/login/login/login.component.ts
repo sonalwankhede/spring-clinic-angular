@@ -1,9 +1,6 @@
-import { Input } from '@angular/core';
-import { Output } from '@angular/core';
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { FormGroup } from '@angular/forms';
-import { EventEmitter } from 'events';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthenticationService } from '../../service/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -12,21 +9,39 @@ import { EventEmitter } from 'events';
 })
 export class LoginComponent implements OnInit {
 
-  constructor() { }
+  username = '';
+  password = '';
+  invalidLogin = false;
+  hide = true;
+
+  @Input() error: string | null;
+  @Output() isRegister: EventEmitter<Boolean> = new EventEmitter(false);
+  showSpinner: boolean;
+
+  constructor(private router: Router,
+    private loginservice: AuthenticationService) { }
+
+    openRegistrationForm: boolean = false;
 
   ngOnInit() {
   }
-  form: FormGroup = new FormGroup({
-    username: new FormControl(''),
-    password: new FormControl(''),
-  });
 
-  submit() {
-    if (this.form.valid) {
-      this.submitEM.emit(this.form.value);
-    }
+  checkLogin() {
+    this.showSpinner = true;
+    (this.loginservice.authenticate(this.username, this.password).subscribe(
+      data => {
+        this.router.navigate(['']);
+        this.invalidLogin = false;
+        this.showSpinner = false;
+      },
+      error => {
+        this.invalidLogin = true;
+        this.error = error.message;
+        this.showSpinner = false;
+      })
+    );
   }
-  @Input() error: string | null;
-
-  @Output() submitEM = new EventEmitter();
+  redirectToRegisterationForm() {
+    this.isRegister.emit(true);
+  }
 }
