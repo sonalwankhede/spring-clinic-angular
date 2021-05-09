@@ -1,17 +1,17 @@
-<!-- <section class="parent padding-top">
+<section class="parent padding-top">
   <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;">
-    <mat-card-title style="background-color: skyblue; ">Pathology Details
+    <mat-card-title style="background-color: skyblue; ">{{title}}
     </mat-card-title>
     <div *ngIf="!loader" style="
     display: inline-block;
-    margin-top: 15px;"><i>(Please add new tests with comma separation.)</i></div>
+    margin-top: 15px;"><i>{{indicativeMessage}}</i></div>
     <div style="display: inline-block; float: right;" *ngIf="!loader">
       <button mat-raised-button style="background-color: green;
       color: white;
       font-size: 12px;
       vertical-align: middle;
       margin-right: 5px;
-      margin-bottom: 5px;" (click)="save()" *ngIf="!textareaPathology.disabled && !showError">
+      margin-bottom: 5px;" (click)="save()" *ngIf="!textarea.disabled && !showError">
         <mat-icon>save_alt</mat-icon>
         Save Changes
       </button>
@@ -20,18 +20,16 @@
       margin-right: 5px;
       margin-bottom: 5px;" (click)="click()">
         <mat-icon>edit</mat-icon>
-        {{ textareaPathology.disabled ? 'Edit Pathology List' : 'No Need to Edit?' }}
+        {{ textarea.disabled ? 'Edit  List' : 'No Need to Edit?' }}
       </button>
     </div>
     <div style="align-content: center;" [hidden]="loader">
       <form class="example-container" #options="ngForm">
-        <textarea matInput name="pathology" [formControl]="textareaPathology" style="min-width: 1000px; border: groove;
-        min-height: 300px;" cols="35" rows="8" placeholder="Added Pathological Tests"></textarea>
-        <mat-error *ngIf="showError">Pathological tests list can not be empty</mat-error>
+        <textarea matInput name="textarea" [formControl]="textarea" style="min-width: 1000px; border: groove;
+        min-height: 300px;" cols="35" rows="8" placeholder="placeholderValue"></textarea>
+        <mat-error *ngIf="showError">{{errorMessage}}</mat-error>
       </form>
     </div>
     <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
   </mat-card>
-</section> -->
-<app-common-text-area [textarea]="pathology" [title]="title" [indicativeMessage]="indicativeMessage"
-  [errorMessage]="errorMessage" (newValues)="save($event)"></app-common-text-area>
+</section>

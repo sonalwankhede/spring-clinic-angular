@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { CommonService } from 'app/common.service';
 import { Observable, of, forkJoin } from 'rxjs';
 
+
 @Component({
   selector: 'app-pathology',
   templateUrl: './pathology.component.html',
@@ -10,11 +11,15 @@ import { Observable, of, forkJoin } from 'rxjs';
 })
 export class PathologyComponent implements OnInit {
 
+  title = 'Pathology Details';
+  indicativeMessage = '(Please add new tests with comma separation.)';
+  errorMessage = 'Pathological tests list can not be empty';
+
   loader: boolean;
   editable: boolean;
   pathology: string;
 
-  textareaPathology = new FormControl({ value: null, disabled: true });
+  // textareaPathology = new FormControl({ value: null, disabled: true });
   showError: boolean;
 
   constructor(private commonService: CommonService) {
@@ -30,36 +35,24 @@ export class PathologyComponent implements OnInit {
       if (res) {
         const data = res.map(function (a) { return a.pathology; });
         this.pathology = data.toString();
-        this.textareaPathology.setValue(data.toString());
-        this.textareaPathology.disable();
         this.loader = false;
       }
     }, (error) => {
       this.loader = false;
     });
   }
-  click() {
-    if (this.textareaPathology.disabled) {
-      this.textareaPathology.enable();
-    } else {
-      this.textareaPathology.disable();
-    }
-  }
-  save() {
-    if (this.textareaPathology && this.textareaPathology.value && this.textareaPathology.value !== null) {
-      this.loader = true;
-      this.textareaPathology.disable();
-      this.showError = false;
-      forkJoin([this.addToList(),
-      this.deleteToList()]).subscribe(res => {
+
+  save(changes: any) {
+    forkJoin(
+      [this.addToList(changes),
+      this.deleteToList(changes)])
+      .subscribe(res => {
         this.ngOnInit();
       });
-    } else {
-      this.showError = true;
-    }
   }
-  deleteToList(): Observable<any> {
-    let removedPathologyScan = this.pathology.split(',').filter(x => !this.textareaPathology.value.split(',').includes(x));
+
+  deleteToList(changes): Observable<any> {
+    let removedPathologyScan = this.pathology.split(',').filter(x => !changes.split(',').includes(x));
     removedPathologyScan = removedPathologyScan.map(function (el) {
       return el.trim();
     });
@@ -75,8 +68,8 @@ export class PathologyComponent implements OnInit {
       return of({});
     }
   }
-  addToList(): Observable<any> {
-    let newlyAddedPathologyScan = this.textareaPathology.value.split(',').filter(x => !this.pathology.includes(x));
+  addToList(changes): Observable<any> {
+    let newlyAddedPathologyScan = changes.split(',').filter(x => !this.pathology.includes(x));
     newlyAddedPathologyScan = newlyAddedPathologyScan.map(function (el) {
       return el.trim();
     });
