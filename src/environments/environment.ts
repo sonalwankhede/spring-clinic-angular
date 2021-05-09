@@ -23,5 +23,5 @@
 
 export const environment = {
   production: false,
-  REST_API_URL: 'http://drsnehalayucare.us-east-2.elasticbeanstalk.com/clinic/api/'
+  REST_API_URL: 'http://drsnehalayucare.ap-south-1.elasticbeanstalk.com/clinic/api/'
 };
