@@ -59,7 +59,6 @@ import { KnownCaseComponent } from './known-case/known-case/known-case.component
 import { BasicAuthHtppInterceptorService } from './service/basic-authentication-interceptor.service';
 import { RegisterationModule } from './registeration/registeration.module';
 import { ObservationsComponent } from './observations/observations/observations.component';
-import { CommonTextAreaModule } from './common-component/common-text-area/common-text-area.module';
 
 @NgModule({
   declarations: [
@@ -108,8 +107,7 @@ import { CommonTextAreaModule } from './common-component/common-text-area/common
     MatDividerModule,
     MatSortModule,
     MatProgressSpinnerModule,
-    ConfirmDialogModule,
-    CommonTextAreaModule
+    ConfirmDialogModule
   ],
   providers: [
     HttpErrorHandler,
