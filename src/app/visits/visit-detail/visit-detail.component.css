@@ -46,7 +46,8 @@ mat-form-field.mat-form-field-should-float label {
   border-collapse: collapse;
   padding: 5px;
   text-align: left;  
-  font-weight: 550 !important;  
+  font-weight: 550 !important;
+  word-wrap: break-word;  
 }
 .table-header {
   font-weight: 550 !important;  
@@ -54,6 +55,9 @@ mat-form-field.mat-form-field-should-float label {
 table.center {
   margin-left: auto;
   margin-right: auto;
+}
+.padding-top-5 {
+  padding-top: 5px !important;
 }
 .margin-bottom {
   margin-bottom: 40px;

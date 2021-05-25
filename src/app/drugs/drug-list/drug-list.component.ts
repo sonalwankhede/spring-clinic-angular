@@ -284,6 +284,7 @@ export class DrugListComponent implements OnInit {
   }
 
   applyFilter(filterValue: string, filterName: string) {
+    filterValue = filterValue.toLocaleLowerCase();
     if (filterName === 'content') {
       this.contentFilter = filterValue;
     } else if (filterName === 'brandName') {

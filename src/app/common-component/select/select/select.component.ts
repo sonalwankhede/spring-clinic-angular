@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ControlContainer, FormControl, FormGroup} from '@angular/forms';
+import {ControlContainer, FormControl, FormGroup, Validators} from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
@@ -34,7 +34,6 @@ export class SelectComponent implements OnInit {
 
   @Input()
   selectedOption: string;
-
   
   @Input()
   formCtrlName: any;
@@ -49,12 +48,19 @@ export class SelectComponent implements OnInit {
       map(value => this._filter(value))
     );
     this.form = <FormGroup>this.controlContainer.control;
+    if(this.selectLabel === 'Select Drug') {
+      this.myControl.setValidators(Validators.required);
+    }
   }
   selected(event: MatAutocompleteSelectedEvent): void {
     this.myControl.setValue(event.option.viewValue);
     this.result.emit(event.option.viewValue);
   }
-
+  showError(): boolean {
+    return this.selectLabel === 'Select Drug' &&
+      (this.myControl.value === undefined ||
+        this.myControl.value === '' || this.myControl.value === null)
+  }
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
     return this.options.filter(option => option.toLowerCase().indexOf(filterValue) >= 0);

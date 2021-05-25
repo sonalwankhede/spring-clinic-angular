@@ -20,7 +20,7 @@
  * @author Sonal Wankhede
  */
 
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { Visit } from '../visit';
 import { VisitService } from '../visit.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -53,7 +53,7 @@ export class PrescriptedDrugs {
   templateUrl: './visit-add.component.html',
   styleUrls: ['./visit-add.component.css']
 })
-export class VisitAddComponent implements OnInit {
+export class VisitAddComponent implements OnInit, OnChanges {
   prescriptionsArray = new Array<PrescriptedDrugs>();
 
   visitForm: FormGroup;
@@ -148,23 +148,18 @@ export class VisitAddComponent implements OnInit {
 
   drug = 'drug';
 
-  selectedDrug: string;
-  selectedMealRequirement: string;
-  selectedTimeClassName: string;
-
   drugsInterface: PrescriptedDrugs;
   drugsInterfaceList: any = [];
 
   @ViewChild('diagnosisInput', { static: true }) diagnosisInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
   complaintsList: string[];
-  celsiusValue: number;
   observationsResponse: string[];
   showRadioChips: boolean = false;
   showPathChips: boolean = false;
   height: number = 0;
   weight: number = 0;
-  bmi: number;
+  bmi: any = 0;
   bmiColor: string;
   bmiHint: string;
   dialogRef: MatDialogRef<AlertDialogComponent>;
@@ -210,34 +205,61 @@ export class VisitAddComponent implements OnInit {
       radiology: new FormControl('No', [])
     });
   }
-  isFormValid(): boolean {
-    return !this.visitForm.valid || this.prescriptionsArray[0].drug === ''
+  isFormInvalid(): boolean {
+    return !this.visitForm.valid || this.isPrescriptionValid()
       || this.finalDiagnosisList.length === 0 || this.finalComplaintsList.length === 0 ||
-      this.finalObservationsList.length === 0
+      this.finalObservationsList.length === 0;
+  }
+  isPrescriptionValid(): boolean {
+    if (this.prescriptionsArray !== undefined) {
+      for (const prescription of this.prescriptionsArray) {
+        if (prescription === undefined || prescription.drug === undefined || prescription.drug === '' || prescription.drug === null) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
   createDrugArray(): any {
     return this.formBuilder.group({
-      serialNumber: new FormControl('', []),
-      drug: new FormControl('', []),
-      duration: new FormControl('', []),
-      dose: new FormControl('', []),
-      instructions: new FormControl('', [])
+      serialNumber: ['', []],
+      drug: ['', []],
+      duration: ['', []],
+      dose: ['', []],
+      instructions: ['', []]
     });
   }
   addDrug(): void {
     this.prescriptions = this.visitForm.get('prescriptions') as FormArray;
+    this.prescriptionsArray.push({
+      serialNumber: Math.max.apply(Math, this.prescriptions.value.map(function (o) { return o.serialNumber + 1; })),
+      drug: '',
+      duration: '',
+      dose: '',
+      instructions: ''
+    });
     this.prescriptions.push(this.createDrugArray());
+    this.prescriptions.value[this.prescriptions.value.length - 1]['serialNumber'] =
+      Math.max.apply(Math, this.prescriptions.value.map(function (o) { return o.serialNumber + 1; }));
   }
   // remove contact from group
   removeDrug(index) {
+    const drugToDelete = this.prescriptions.value[index].drug;
+    this.prescriptionsArray = this.prescriptions.value.filter(function (obj) {
+      return obj.drug !== drugToDelete;
+    });
     this.prescriptions.removeAt(index);
   }
   setListValue(event, i, fieldName) {
+    if (fieldName === 'serialNumber') {
+      i = Number(i);
+    }
     this.prescriptionsArray[i] ? this.prescriptionsArray[i][fieldName] = event
       : this.prescriptionsArray[i] = this.getPrescriptionObject(), this.prescriptionsArray[i][fieldName] = event;
-    if (fieldName !== 'serialNumber' && this.prescriptionsArray[i].serialNumber === 0) {
+    if (fieldName !== 'serialNumber') {
       this.prescriptionsArray[i].serialNumber = i + 1;
     }
+    this.visitForm.get('prescriptions').setValue(this.prescriptionsArray);
   }
   private getPrescriptionObject(): PrescriptedDrugs {
     return {
@@ -272,6 +294,9 @@ export class VisitAddComponent implements OnInit {
       this.finalRadiologyList = [];
     }
   }
+  ngOnChanges(changes: SimpleChanges) {
+    // changes.prop contains the old and the new value...
+  }
   ngOnInit() {
     console.log(this.route.parent);
     const patientId = this.route.snapshot.params.id;
@@ -304,7 +329,8 @@ export class VisitAddComponent implements OnInit {
     this.drugService.getDrugs().subscribe(result => {
       for (let obj of result) {
         delete obj.id;
-        this.drugsList.push(obj.formOfDrugs.substring(0, 3) + '. ' + obj.brandName + ' (' + obj.content + ') ' + obj.strength);
+        this.drugsList.push((obj.formOfDrugs ? obj.formOfDrugs.substring(0, 3) + '. ' : '') +
+          (obj.brandName ? obj.brandName : '') + (obj.content ? ' (' + obj.content + ') ' : '') + (obj.strength ? obj.strength : ''));
       }
     });
   }
@@ -360,18 +386,18 @@ export class VisitAddComponent implements OnInit {
     } else {
       visit.bmi = null;
     }
-    visit.diagnosis = this.finalDiagnosisList.toString();
-    visit.complaints = this.finalComplaintsList.toString();
-    visit.observations = this.finalObservationsList.toString();
+    visit.diagnosis = this.finalDiagnosisList.join(', ');
+    visit.complaints = this.finalComplaintsList.join(', ');
+    visit.observations = this.finalObservationsList.join(', ');
     if (visit['pathology'] === 'No') {
       visit.pathology = '';
     } else {
-      visit.pathology = this.finalPathologyList.toString();
+      visit.pathology = this.finalPathologyList.join(', ');
     }
     if (visit['radiology'] === 'No') {
       visit.radiology = '';
     } else {
-      visit.radiology = this.finalRadiologyList.toString();
+      visit.radiology = this.finalRadiologyList.join(', ');
     }
     visit['prescriptions'] = [];
     visit['prescriptions'] = this.prescriptionsArray;

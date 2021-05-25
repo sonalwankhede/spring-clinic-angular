@@ -47,25 +47,29 @@
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
             <mat-label>Height (cms)</mat-label>
             <input class="input" matInput type="number" placeholder="Height" formControlName="height"
-            (keyup)="calculateBmi($event.target.value, 'height')" (change)="calculateBmi($event.target.value, 'height')" >
+              (keyup)="calculateBmi($event.target.value, 'height')"
+              (change)="calculateBmi($event.target.value, 'height')">
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
             <mat-label>Weight (kg)</mat-label>
             <input class="input" matInput type="number" placeholder="Weight" formControlName="weight"
-            (keyup)="calculateBmi($event.target.value, 'weight')" (change)="calculateBmi($event.target.value, 'weight')">
+              (keyup)="calculateBmi($event.target.value, 'weight')"
+              (change)="calculateBmi($event.target.value, 'weight')">
           </mat-form-field>
 
           <mat-form-field appearance="outline" style="width: 140px !important; margin: 5px !important;">
             <mat-label>BMI (kg/m<sup>2</sup>)</mat-label>
             <input class="input" matInput type="number" placeholder="Body Mass Index" formControlName="bmi">
-            <mat-hint align="end" *ngIf="bmi > 0" class="bmi-message" [ngStyle]="{'background': bmiColor}">{{bmiHint}}</mat-hint>
+            <mat-hint align="end" *ngIf="bmi > 0" class="bmi-message" [ngStyle]="{'background': bmiColor}">{{bmiHint}}
+            </mat-hint>
           </mat-form-field>
         </mat-card-content>
 
         <mat-card-content *ngIf="showDrugs">
-          <app-chips-add [formCtrlName]="complaints" chipLabel="Complaints" [chipsList]="complaintsList" [selectable]=true
-            [removable]=true [placeholder]="complaintsPlaceholder" [selectedChipsList]="finalComplaintsList">
+          <app-chips-add [formCtrlName]="complaints" chipLabel="Complaints" [chipsList]="complaintsList"
+            [selectable]=true [removable]=true [placeholder]="complaintsPlaceholder"
+            [selectedChipsList]="finalComplaintsList">
           </app-chips-add>
 
           <app-chips-add [formCtrlName]="observations" chipLabel="Examination" [chipsList]="observationsList"
@@ -73,9 +77,11 @@
             [selectedChipsList]="finalObservationsList">
           </app-chips-add>
 
-          <app-chips-add [formCtrlName]="diagnosis" chipLabel="Preliminary Diagnosis" [chipsList]="diagnosisList" [selectable]=true
-            [removable]=true [placeholder]="diagnosisPlaceholder" [selectedChipsList]="finalDiagnosisList">
+          <app-chips-add [formCtrlName]="diagnosis" chipLabel="Preliminary Diagnosis" [chipsList]="diagnosisList"
+            [selectable]=true [removable]=true [placeholder]="diagnosisPlaceholder"
+            [selectedChipsList]="finalDiagnosisList">
           </app-chips-add>
+
         </mat-card-content>
 
         <mat-card-content formArrayName="prescriptions"
@@ -84,20 +90,25 @@
             <mat-form-field appearance="outline" style="width: 65px !important; margin: 5px !important;">
               <mat-label>No.</mat-label>
               <input class="input" matInput type="number" placeholder="Serial Number" value="{{i + 1}}"
-              (keyup)="setListValue($event.target.value, i, 'serialNumber')" (change)="setListValue($event.target.value, i, 'serialNumber')">
+                (keyup)="setListValue($event.target.value, i, 'serialNumber')"
+                (change)="setListValue($event.target.value, i, 'serialNumber')">
             </mat-form-field>
             <app-select style="display: inline-block;" [selectLabel]="drugLabel" [options]="drugsList"
-              [selectedOption]="selectedDrug" (result)="setListValue($event, i, 'drug')"></app-select>
+              (result)="setListValue($event, i, 'drug')"></app-select>
+
             <app-select style="display: inline-block;" [selectLabel]="timeRequirement" [options]="dose"
-              [selectedOption]="selectedTimeClassName" (result)="setListValue($event, i, 'dose')">
+              (result)="setListValue($event, i, 'dose')">
             </app-select>
+
             <app-select style="display: inline-block;" [selectLabel]="mealRequirement" [options]="duration"
-              [selectedOption]="selectedMealRequirement" (result)="setListValue($event, i, 'duration')">
+              (result)="setListValue($event, i, 'duration')">
             </app-select>
+
             <mat-form-field appearance="outline" style="width: 200px !important; padding: 5px !important;">
               <mat-label>Additional Instructions</mat-label>
               <input class="input" style="height: 30px !important; " matInput type="text" placeholder="Instructions"
                 formControlName="instructions" (input)="setListValue($event.target.value, i, 'instructions')">
+
             </mat-form-field>
 
             <span *ngIf="i > 0" (click)=removeDrug(i)
@@ -142,7 +153,7 @@
         </mat-card-content>
 
         <mat-card-actions align="center">
-          <button mat-raised-button color="primary" [disabled]="isFormValid()">Create Prescription</button>
+          <button mat-raised-button color="primary" [disabled]="isFormInvalid()">Create Prescription</button>
           <button type="button" mat-raised-button color="warn" (click)="gotoPatientList()">Cancel</button>
         </mat-card-actions>
       </form>

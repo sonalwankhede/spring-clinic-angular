@@ -70,27 +70,24 @@
         </mat-card-content>
 
         <mat-card-content *ngIf="showLists">
-          <app-chips-add [formCtrlName]="drugAllergies" chipLabel='Drug Allergies' [isMandatory]=true
+          <app-chips-add [formCtrlName]="drugAllergies" chipLabel='Drug Allergies'
             [chipsList]="drugAllergiesList" [selectable]=true [removable]=true 
             placeholder='Does patient have any drug allergy?' [selectedChipsList]="finalDrugAllergiesList">
           </app-chips-add>
-          <mat-error *ngIf="finalDrugAllergiesList.length == 0">Drug Allergies required</mat-error>
         </mat-card-content>
 
         <mat-card-content *ngIf="showLists">
 
-          <app-chips-add [formCtrlName]="otherAllergies" chipLabel='Other Allergies' [isMandatory]=true
+          <app-chips-add [formCtrlName]="otherAllergies" chipLabel='Other Allergies'
             [chipsList]="otherAllergiesList" [selectable]=true [removable]=true
             placeholder='Does patient have any other allergy?' [selectedChipsList]="finalOtherAllergiesList">
           </app-chips-add>
-          <mat-error *ngIf="finalOtherAllergiesList.length == 0">Other Allergies required</mat-error>
         </mat-card-content>
         <mat-card-content *ngIf="showLists">
-          <app-chips-add [formCtrlName]="history" chipLabel='Known Case' [chipsList]="caseList" [isMandatory]=true
+          <app-chips-add [formCtrlName]="history" chipLabel='Known Case' [chipsList]="caseList"
             [selectable]=true [removable]=true placeholder='Does patient have any peculiar history?'
             [selectedChipsList]="finalCaseList" >
           </app-chips-add>
-          <mat-error *ngIf="finalCaseList.length == 0">Known cases required</mat-error>
         </mat-card-content>
 
         <mat-card-actions align="center">

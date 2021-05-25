@@ -12,3 +12,7 @@ mat-option.mat-option{
   line-height: 24px!important;
   max-height: 24px!important;
 }
+:host ::ng-deep .padding-only-top div.mat-input-wrapper.mat-form-field-wrapper{
+  padding-bottom: 0px;
+  padding-top: 20px;
+}

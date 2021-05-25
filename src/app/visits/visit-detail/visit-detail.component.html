@@ -26,9 +26,9 @@
               {{visit.patient.gender}}
             </th>
             <table>
-              <tr style="font-size: 18px; font-weight: 550px; text-align: end; white-space: pre; "> {{visitdate}}
+              <tr style="font-size: 18px; font-weight: 500; text-align: end; white-space: pre; "> {{visitdate}}
                 &nbsp; &nbsp; &nbsp; </tr>
-              <tr style="font-size: 18px;font-weight: bo550pxlder; text-align: end;"> {{visit.patient.age}} &nbsp;&nbsp;
+              <tr style="font-size: 16px;font-weight: 500; text-align: end;"> {{visit.patient.age}} &nbsp;&nbsp;
                 &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; </tr>
 
             </table>
@@ -38,33 +38,27 @@
       <div style="padding-left: 60px;">
         <table class="center">
 
-          <br>
-          <br>
           <!-- history Column -->
           <tr>
-            <th style="padding-left: 20px;" class="table-header"> Known Case Of </th>
-            <td>:- {{visit.patient.history}} </td>
+            <th style="padding-left: 20px;" class="table-header padding-top-5"> Known Case Of </th>
+            <td class="padding-top-5">:- {{visit.patient.history}} </td>
           </tr>
-          <br>
           <tr>
             <!-- Drug Allergies Column -->
-            <th style="padding-left: 20px;" class="table-header"> Drug Allergies </th>
-            <td>:- {{visit.patient.drugAllergies}} </td>
+            <th style="padding-left: 20px;" class="table-header padding-top-5"> Drug Allergies </th>
+            <td class="padding-top-5">:- {{visit.patient.drugAllergies}} </td>
           </tr>
-          <br>
           <tr>
-            <th style="padding-left: 20px;" class="table-header"> Other Allergies </th>
-            <td>:- {{visit.patient.otherAllergies}} </td>
+            <th style="padding-left: 20px;" class="table-header padding-top-5"> Other Allergies </th>
+            <td class="padding-top-5">:- {{visit.patient.otherAllergies}} </td>
           </tr>
-          <br>
           <tr>
-            <th style="padding-left: 20px;" class="table-header"> Complaints </th>
-            <td>:- {{visit.complaints.toString()}}</td>
+            <th style="padding-left: 20px;" class="table-header padding-top-5"> Complaints </th>
+            <td class="padding-top-5">:- {{visit.complaints.toString()}}</td>
           </tr>
-          <br>
           <tr>
-            <th style="padding-left: 20px;" class="table-header"> Vitals </th>
-            <td>
+            <th style="padding-left: 20px;" class="table-header padding-top-5"> Vitals </th>
+            <td style="padding-top: 5px !important;" class="padding-top-5">
               <table style="width:100%; border: 0.5px dotted black;
             border-collapse: collapse;font-size: 12px;" class="th-td center">
                 <tr>
@@ -90,47 +84,43 @@
               </table>
             </td>
           </tr>
-          <br>
           <tr>
-            <th style="padding-left: 20px;" class="table-header"> Examination </th>
-            <td>:- {{visit.observations.toString()}}</td>
+            <th style="padding-left: 20px;" class="table-header padding-top-5"> Examination </th>
+            <td class="padding-top-5">:- {{visit.observations.toString()}}</td>
           </tr>
-          <br>
           <tr>
-            <th style="padding-left: 20px;" class="table-header"> Preliminary Diagnosis </th>
-            <td>:- {{visit.diagnosis.toString()}}</td>
+            <th style="padding-left: 20px;" class="table-header padding-top-5"> Preliminary Diagnosis </th>
+            <td class="padding-top-5">:- {{visit.diagnosis.toString()}}</td>
           </tr>
         </table>
       </div>
-      <br>
       <div style="padding-left: 80px;">
-        <p style="color: black; font-family: cursive; font-weight: 400;">&nbsp; <i>Rx</i></p>
-        <br>
+        <p style="color: black; font-family: cursive; font-weight: 400;padding-bottom: 3px;
+          padding-top: 2px;">&nbsp; <i>Rx</i></p>
         <table style="width:100%; border: 0.1px dotted #c5c1c1;
           border-collapse: collapse;" class="th-td center">
           <tr>
-            <th class="th-td"> Drug </th>
-            <th class="th-td"> Dose </th>
-            <th class="th-td"> Instructions </th>
-            <th class="th-td"> Course Duration </th>
+            <th class="th-td" style="width: 40%;font-size: 12px;"> Drug </th>
+            <th class="th-td" style="width: 25%;font-size: 12px;"> Dose </th>
+            <th class="th-td" style="width: 25%;font-size: 12px;"> Instructions </th>
+            <th class="th-td" style="width: 10%;font-size: 12px;"> Course </th>
           </tr>
           <tr *ngFor="let drug of prescription" class="th-td">
-            <td class="th-td" style="font-weight: 400;"> {{drug['drug'].toString()}}</td>
-            <td class="th-td" style="font-weight: 400;"> {{drug['dose'].toString()}}</td>
-            <td class="th-td" style="font-weight: 400;"> {{drug['duration'].toString()}}</td>
-            <td class="th-td" style="font-weight: 400;"> {{drug['instructions'].toString()}}</td>
+            <td class="th-td" style="font-weight: 400 !important;"> {{drug['drug'].toString()}}</td>
+            <td class="th-td" style="font-weight: 400 !important;font-size: 12px;"> {{drug['dose'].toString()}}</td>
+            <td class="th-td" style="font-weight: 400 !important;font-size: 12px;"> {{drug['duration'].toString()}}</td>
+            <td class="th-td" style="font-weight: 400 !important;font-size: 12px;"> {{drug['instructions'].toString()}}</td>
           </tr>
         </table>
       </div>
-      <br>
       <div style="padding-left: 80px;">
         <tr>
-          <th class="table-header">Recommended Tests</th>
-          <td>:- {{visit.pathology}} </td>
+          <th class="table-header padding-top-5">Recommended Tests</th>
+          <td class="padding-top-5">:- {{visit.pathology}} </td>
         </tr>
         <tr>
-          <th class="table-header">Recommended Scans</th>
-          <td>:- {{visit.radiology}} </td>
+          <th class="table-header padding-top-5">Recommended Scans</th>
+          <td class="padding-top-5">:- {{visit.radiology}} </td>
         </tr>
       </div>
     </div>

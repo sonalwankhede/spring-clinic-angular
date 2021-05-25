@@ -62,8 +62,8 @@ export class DrugEditComponent implements OnInit {
   buildForm() {
     this.idCtrl = new FormControl(null);
     this.drugEditForm = this.formBuilder.group({
-      content: new FormControl('', [Validators.maxLength(60)]),
-      brandName: new FormControl('', [Validators.required, Validators.maxLength(60)]),
+      content: new FormControl('', [Validators.maxLength(150)]),
+      brandName: new FormControl('', [Validators.required, Validators.maxLength(150)]),
       strength: new FormControl(),
       formOfDrugs: new FormControl('', [Validators.maxLength(100)])
     });

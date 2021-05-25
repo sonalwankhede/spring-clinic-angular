@@ -212,7 +212,7 @@ export class CommonService {
       );
   }
   removeFromDiagnosis(diagnosisAreRemoved: any[]): Observable<any> {
-    return this.http.post<any[]>(environment.REST_API_URL + 'diagnosis/delete', diagnosisAreRemoved)
+    return this.http.post<any[]>(environment.REST_API_URL + 'diagnosisDictionary/delete', diagnosisAreRemoved)
       .pipe(
         catchError(this.handlerError('removeFromComplaints', diagnosisAreRemoved)
         )

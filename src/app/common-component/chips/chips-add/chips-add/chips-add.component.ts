@@ -43,9 +43,6 @@ export class ChipsAddComponent implements OnInit {
 
   chipsCtrl = new FormControl();
 
-  @Input()
-  isMandatory: boolean;
-
   @ViewChild('chipsInput', { static: true }) chipsInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto', { static: true }) matAutocomplete: MatAutocomplete;
 
@@ -63,7 +60,7 @@ export class ChipsAddComponent implements OnInit {
       map((chip: string | null) => chip ? this._filter(chip) : this.chipsList.slice()));
     this.form = <FormGroup>this.controlContainer.control;
     this.control = <FormControl>this.form.get(this.formCtrlName);
-    if(this.isMandatory && this.selectedChipsList.length == 0) {
+    if(this.selectedChipsList.length == 0) {
       this.onchange.emit(false);
     }
   }
