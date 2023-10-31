@@ -1,5 +1,5 @@
 <section class="parent padding-top">
-  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;min-width: 1288.41px" *ngIf="showVisitForm">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;min-width: 1288.41px" *ngIf="!loader">
     <mat-card-title style="background-color: skyblue; ">Edit Visit For :: {{visit.patient.firstName}}
       {{visit.patient.lastName}}</mat-card-title>
     <div style="align-content: center;">
@@ -109,7 +109,6 @@
               <mat-label>Additional Instructions</mat-label>
               <input class="input" style="height: 30px !important; " matInput type="text" placeholder="Instructions"
                 formControlName="instructions" (input)="setListValue($event.target.value, i, 'instructions')">
-
             </mat-form-field>
 
             <span *ngIf="i > 0" (click)=removeDrug(i)
@@ -152,7 +151,12 @@
             [selectedChipsList]="finalRadiologyList">
           </app-chips-add>
         </mat-card-content>
-
+        <mat-form-field appearance="none" style="width: 25% !important;">
+          <mat-label>Next Follow Up On</mat-label>
+          <input matInput [min]="minDate" [matDatepicker]="nextFollowUpPicker" placeholder="Next Follow Up On" formControlName="nextFollowUp">
+          <mat-datepicker-toggle matSuffix [for]="nextFollowUpPicker"></mat-datepicker-toggle>
+          <mat-datepicker #nextFollowUpPicker></mat-datepicker>
+        </mat-form-field>
         <mat-card-actions align="center">
           <button mat-raised-button color="primary" [disabled]="isFormInvalid()">Update
             Prescription</button>
@@ -160,6 +164,6 @@
         </mat-card-actions>
       </form>
     </div>
-    <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
   </mat-card>
+  <mat-spinner style="margin:0 auto;margin-top: 100px;" *ngIf="loader"></mat-spinner>
 </section>

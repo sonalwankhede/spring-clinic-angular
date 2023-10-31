@@ -1,7 +1,7 @@
 <section class="parent padding-top">
   <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;">
     <mat-card-title style="background-color: skyblue; ">Patient Information</mat-card-title>
-    <div style="align-content: center;">
+    <div style="align-content: center;" *ngIf="!loader">
 
       <form [formGroup]="patientForm" *ngIf="patientForm" autocomplete="off" novalidate (ngSubmit)="editPatient()"
         fxLayout="column wrap" fxLayoutAlign="center center" fxLayoutGap="10px">
@@ -24,23 +24,26 @@
               id="lastName">
           </mat-form-field>
           &nbsp;&nbsp;&nbsp;
-
-        </mat-card-content>
-
-        <mat-card-content>
           <mat-radio-group formControlName="gender">
             <mat-radio-button value="Female" #female name="female" required>Female</mat-radio-button>
             &nbsp;&nbsp;
             <mat-radio-button value="Male" #male name="male" required>Male</mat-radio-button>
           </mat-radio-group>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </mat-card-content>
+
+        <mat-card-content>
           <mat-form-field style="width:130px !important;" appearance="outline">
             <mat-label>Age</mat-label>
-            <input class="input" matInput type="number" min="0" placeholder="Patient's Age" formControlName="age"
+            <input class="input" matInput type="text" placeholder="Patient's Age" formControlName="age"
               id="age">
           </mat-form-field>
           &nbsp;&nbsp;&nbsp;
-
+          <mat-form-field style="width:130px !important;" appearance="outline">
+            <mat-label>Telephone</mat-label>
+            <input class="input" matInput type="text" placeholder="Patient's Telephone" formControlName="telephone"
+              id="telephone">
+          </mat-form-field>
+          &nbsp;&nbsp;&nbsp;
           <mat-form-field appearance="outline">
             <mat-label>Address</mat-label>
             <input class="input" matInput type="text" placeholder="Patient's address" formControlName="address">
@@ -82,5 +85,6 @@
         </mat-card-actions>
       </form>
     </div>
+    <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
   </mat-card>
 </section>

@@ -26,3 +26,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .padding-top {
     padding-top: 50px !important;
 }
+.orange-button {
+    background-color: rgb(240, 127, 46);
+    color: white;
+    margin: 10px !important;
+    cursor: pointer;
+}
+.orange-button:disabled {
+    background-color: rgba(0, 0, 0, 0.12);
+    border-bottom-color: rgba(0, 0, 0, 0.26);
+    color: rgba(0, 0, 0, 0.26);
+    margin: 10px;
+    cursor: not-allowed;
+}
+.green-button {
+    background-color: forestgreen;
+    color: white;
+    margin: 10px !important;
+    cursor: pointer;
+}
+.green-button:disabled {
+    background-color: rgba(0, 0, 0, 0.12);
+    border-bottom-color: rgba(0, 0, 0, 0.26);
+    color: rgba(0, 0, 0, 0.26);
+    margin: 10px;
+    cursor: not-allowed;
+}

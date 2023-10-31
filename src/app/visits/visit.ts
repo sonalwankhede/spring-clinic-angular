@@ -41,4 +41,5 @@ export interface Visit {
   radiology: string;
   patient: Patient;
   prescription: PrescriptedDrugs[];
+  nextFollowUp: string;
 }

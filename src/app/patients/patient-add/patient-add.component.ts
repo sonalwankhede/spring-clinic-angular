@@ -81,6 +81,7 @@ export class PatientAddComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.loader = true;
     this.patientForm = this.formBuilder.group({
       firstName: new FormControl('', [Validators.required, Validators.maxLength(60)]),
       lastName: new FormControl('', [Validators.required, Validators.maxLength(60)]),
@@ -102,6 +103,7 @@ export class PatientAddComponent implements OnInit {
         this.separteOutStringFromObject(results[1], 'allergy', this.drugAllergiesList);
         this.separteOutStringFromObject(results[2], 'issues', this.caseList);
         this.showLists = true;
+        this.loader = false;
       }
     ), (error => {
       console.log(error);

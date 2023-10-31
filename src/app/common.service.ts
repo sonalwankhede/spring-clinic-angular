@@ -50,7 +50,7 @@ export class CommonService {
       ]
     }
     return this.http
-      .post<any>("http://drsnehalayucare.ap-south-1.elasticbeanstalk.com/clinic/users", requestPayload)
+      .post<any>("http://doctorsnehalayucare-env.eba-pfv3bz7q.ap-south-1.elasticbeanstalk.com/clinic/users", requestPayload)
       .pipe(
         catchError(this.handlerError('addUser', []))
       );

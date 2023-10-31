@@ -55,6 +55,7 @@ export class PatientDetailComponent implements OnInit {
 
   ngOnInit() {
     const patientId = this.route.snapshot.params.id;
+    this.loader = true;
     this.patientService.getPatientById(patientId).subscribe(
       patient => {
         this.patient = patient,
@@ -71,6 +72,7 @@ export class PatientDetailComponent implements OnInit {
             otherAllergies: new FormControl({ value: this.patient.otherAllergies, disabled: true }),
             history: new FormControl({ value: this.patient.history, disabled: true })
           });
+          this.loader = false;
       }, (error) => {
         console.log(error);
         this.errorMessage = 'There was an issue while fetching patient details. Please retry';

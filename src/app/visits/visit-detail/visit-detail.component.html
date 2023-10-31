@@ -3,11 +3,11 @@
     <mat-card-title style="background-color: skyblue; text-align: center;">View Prescription</mat-card-title>
     <div>
       <div class="container-to-left">
-        <button mat-raised-button color="primary" style="margin: 10px;" (click)="goToPatient()"><mat-icon>edit</mat-icon> Edit Patient Data</button>
+        <button mat-raised-button color="primary" style="margin: 10px;" [disabled]="!currentPatient.id" (click)="goToPatient()"><mat-icon>edit</mat-icon> Edit Patient Data</button>
       </div>
     <div class="container-to-right">
-      <button mat-raised-button style="background-color: rgb(240, 127, 46); color: white;margin: 10px;" (click)="goToEdit()"><mat-icon>edit</mat-icon> Edit Prescription</button>
-      <button mat-raised-button style="background-color: forestgreen; color: white;margin: 10px;" (click)="SavePDF()"><mat-icon>picture_as_pdf</mat-icon> Export</button>
+      <button mat-raised-button class="orange-button" [disabled]="!visit.id" (click)="goToEdit()"><mat-icon>edit</mat-icon> Edit Prescription</button>
+      <button mat-raised-button class="green-button" [disabled]="!visit.id" (click)="SavePDF()"><mat-icon>picture_as_pdf</mat-icon> Export</button>
     </div>
   </div>
     <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
@@ -40,24 +40,24 @@
 
           <!-- history Column -->
           <tr>
-            <th style="padding-left: 20px;" class="table-header padding-top-5"> Known Case Of </th>
-            <td class="padding-top-5">:- {{visit.patient.history}} </td>
+            <th style="padding-left: 20px;padding-right: 10px;" class="table-header padding-top-5"> K/C/O </th>
+            <td class="padding-top-5"> {{visit.patient.history}} </td>
           </tr>
           <tr>
             <!-- Drug Allergies Column -->
-            <th style="padding-left: 20px;" class="table-header padding-top-5"> Drug Allergies </th>
-            <td class="padding-top-5">:- {{visit.patient.drugAllergies}} </td>
+            <th style="padding-left: 20px;padding-right: 10px;" class="table-header padding-top-5"> Drug Allergies </th>
+            <td class="padding-top-5"> {{visit.patient.drugAllergies}} </td>
           </tr>
           <tr>
-            <th style="padding-left: 20px;" class="table-header padding-top-5"> Other Allergies </th>
-            <td class="padding-top-5">:- {{visit.patient.otherAllergies}} </td>
+            <th style="padding-left: 20px;padding-right: 10px;" class="table-header padding-top-5"> Other Allergies </th>
+            <td class="padding-top-5"> {{visit.patient.otherAllergies}} </td>
           </tr>
           <tr>
-            <th style="padding-left: 20px;" class="table-header padding-top-5"> Complaints </th>
-            <td class="padding-top-5">:- {{visit.complaints.toString()}}</td>
+            <th style="padding-left: 20px;padding-right: 10px;" class="table-header padding-top-5"> Complaints </th>
+            <td class="padding-top-5"> {{visit.complaints.toString()}}</td>
           </tr>
           <tr>
-            <th style="padding-left: 20px;" class="table-header padding-top-5"> Vitals </th>
+            <th style="padding-left: 20px;padding-right: 10px;" class="table-header padding-top-5"> Vitals </th>
             <td style="padding-top: 5px !important;" class="padding-top-5">
               <table style="width:100%; border: 0.5px dotted black;
             border-collapse: collapse;font-size: 12px;" class="th-td center">
@@ -85,12 +85,12 @@
             </td>
           </tr>
           <tr>
-            <th style="padding-left: 20px;" class="table-header padding-top-5"> Examination </th>
-            <td class="padding-top-5">:- {{visit.observations.toString()}}</td>
+            <th style="padding-left: 20px;padding-right: 10px;" class="table-header padding-top-5"> Examination </th>
+            <td class="padding-top-5"> {{visit.observations.toString()}}</td>
           </tr>
           <tr>
-            <th style="padding-left: 20px;" class="table-header padding-top-5"> Preliminary Diagnosis </th>
-            <td class="padding-top-5">:- {{visit.diagnosis.toString()}}</td>
+            <th style="padding-left: 20px;padding-right: 10px;" class="table-header padding-top-5"> Preliminary Diagnosis </th>
+            <td class="padding-top-5"> {{visit.diagnosis.toString()}}</td>
           </tr>
         </table>
       </div>
@@ -100,10 +100,10 @@
         <table style="width:100%; border: 0.1px dotted #c5c1c1;
           border-collapse: collapse;" class="th-td center">
           <tr>
-            <th class="th-td" style="width: 40%;font-size: 12px;"> Drug </th>
-            <th class="th-td" style="width: 25%;font-size: 12px;"> Dose </th>
-            <th class="th-td" style="width: 25%;font-size: 12px;"> Instructions </th>
-            <th class="th-td" style="width: 10%;font-size: 12px;"> Course </th>
+            <th class="th-td" style="width: 55%;font-size: 12px;"> Drug </th>
+            <th class="th-td" style="width: 15%;font-size: 12px;"> Dose Freq. </th>
+            <th class="th-td" style="width: 15%;font-size: 12px;"> Instructions </th>
+            <th class="th-td" style="width: 15%;font-size: 12px;"> Course </th>
           </tr>
           <tr *ngFor="let drug of prescription" class="th-td">
             <td class="th-td" style="font-weight: 400 !important;"> {{drug['drug'].toString()}}</td>
@@ -114,13 +114,17 @@
         </table>
       </div>
       <div style="padding-left: 80px;">
-        <tr>
+        <tr *ngIf="visit.pathology">
           <th class="table-header padding-top-5">Recommended Tests</th>
-          <td class="padding-top-5">:- {{visit.pathology}} </td>
+          <td class="padding-top-5"> :- {{visit.pathology}} </td>
         </tr>
-        <tr>
+        <tr *ngIf="visit.radiology">
           <th class="table-header padding-top-5">Recommended Scans</th>
-          <td class="padding-top-5">:- {{visit.radiology}} </td>
+          <td class="padding-top-5"> :- {{visit.radiology}} </td>
+        </tr>
+        <tr *ngIf="visit.nextFollowUp">
+          <th class="table-header padding-top-5">Next Followup</th>
+          <td class="padding-top-5"> :- {{datepipe.transform(visit.nextFollowUp, 'dd MMM yyyy')}} </td>
         </tr>
       </div>
     </div>

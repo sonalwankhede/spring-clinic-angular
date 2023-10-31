@@ -78,6 +78,7 @@ export class PatientEditComponent implements OnInit {
 
   ngOnInit() {
     const patientId = this.route.snapshot.params.id;
+    this.loader = true;
     forkJoin([this.commonService.getOtherAllergies(), this.commonService.getDrugAllergies(),
     this.commonService.getKnownCase()]).subscribe(
       results => {
@@ -101,6 +102,7 @@ export class PatientEditComponent implements OnInit {
         this.finalOtherAllergiesList = this.patient.otherAllergies.split(',');
         this.finalCaseList = this.patient.history.split(',');
         this.showLists = true;
+        this.loader = false;
       });
   }
   separteOutStringFromObject(resultList, field, arrayToBePushedTo) {

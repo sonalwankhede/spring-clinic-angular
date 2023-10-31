@@ -22,6 +22,7 @@ import { DatePipe } from '@angular/common';
 import { AlertDialogComponent } from 'app/common-component/dialog/alert-dialog/alert-dialog.component';
 import { ConfirmDialogModel } from 'app/common-component/dialog/confirm-dialog/confirm-dialog.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
+import * as moment from 'moment';
 
 
 export class PrescriptedDrugs {
@@ -91,7 +92,6 @@ export class VisitEditComponent implements OnInit, OnChanges {
   diagnosisPlaceholder = 'Add your diagnosis here!';
   drugsPlaceholder = 'Prescribe drugs here!';
 
-  showVisitForm: boolean = false;
   loader: boolean = false;
 
   dose = [
@@ -152,6 +152,7 @@ export class VisitEditComponent implements OnInit, OnChanges {
   bmiColor: string;
   bmiHint: string;
   dialogRef: MatDialogRef<AlertDialogComponent>;
+  minDate: Date;
 
   constructor(private visitService: VisitService,
     private commonService: CommonService, private drugService: DrugService, public dialog: MatDialog,
@@ -176,7 +177,7 @@ export class VisitEditComponent implements OnInit, OnChanges {
     this.formBuilder = new FormBuilder();
 
     this.visitForm = this.formBuilder.group({
-      visitDate: new FormControl('', []),
+      visitDate: new FormControl({ value: '', disabled: true }, []),
       temperature: new FormControl('', [Validators.required]),
       pulse: new FormControl('', [Validators.required]),
       spo2: new FormControl('', [Validators.required]),
@@ -190,7 +191,8 @@ export class VisitEditComponent implements OnInit, OnChanges {
       diagnosis: new FormControl('', []),
       prescriptions: this.formBuilder.array([this.createDrugArray()]),
       pathology: new FormControl('No', []),
-      radiology: new FormControl('No', [])
+      radiology: new FormControl('No', []),
+      nextFollowUp: new FormControl('', [])
     });
   }
   isFormInvalid(): boolean {
@@ -240,12 +242,12 @@ export class VisitEditComponent implements OnInit, OnChanges {
   }
   setListValue(event, i, fieldName) {
     if (fieldName === 'serialNumber') {
-      i = Number(i);
-    }
-    this.prescriptionsArray[i] ? this.prescriptionsArray[i][fieldName] = event
-      : this.prescriptionsArray[i] = this.getPrescriptionObject(), this.prescriptionsArray[i][fieldName] = event;
-    if (fieldName !== 'serialNumber') {
-      this.prescriptionsArray[i].serialNumber = i + 1;
+      this.prescriptionsArray[i] ? this.prescriptionsArray[i][fieldName] = Number(event)
+        : this.prescriptionsArray[i] = this.getPrescriptionObject(), this.prescriptionsArray[i][fieldName] = Number(event);
+    } else {
+      this.prescriptionsArray[i] ? this.prescriptionsArray[i][fieldName] = event
+        : this.prescriptionsArray[i] = this.getPrescriptionObject(), this.prescriptionsArray[i][fieldName] = event;
+      this.prescriptionsArray[i].serialNumber === 0 && this.prescriptionsArray.length === 1 ? this.prescriptionsArray[i].serialNumber = 1 : '';
     }
     this.visitForm.get('prescriptions').setValue(this.prescriptionsArray);
   }
@@ -286,9 +288,8 @@ export class VisitEditComponent implements OnInit, OnChanges {
     // changes.prop contains the old and the new value...
   }
   ngOnInit() {
-    console.log(this.route.parent);
     const visitId = this.route.snapshot.params.id;
-
+    this.loader = true;
     this.visitService.getVisitById(visitId).subscribe(
       response => {
         this.visit = response;
@@ -306,11 +307,10 @@ export class VisitEditComponent implements OnInit, OnChanges {
             this.separteOutStringFromObject(results[3], 'pathology', this.pathologyList);
             this.separteOutStringFromObject(results[4], 'radiology', this.radiologyList);
             this.setFormValues();
-            this.showVisitForm = true;
           });
       }, (error) => {
         console.log(error);
-        this.showVisitForm = true;
+        this.loader = false;
         this.errorMessage = 'There was an issue.';
       });
     this.drugService.getDrugs().subscribe(result => {
@@ -321,8 +321,15 @@ export class VisitEditComponent implements OnInit, OnChanges {
       }
     });
   }
+  getMinFollowUpdate() {
+    var newdate = new Date(new Date(this.visitForm.get('visitDate').value));
+    newdate.setDate(newdate.getDate() + 1);
+    this.minDate = newdate;
+  }
   setFormValues() {
     this.visitForm.controls.visitDate.setValue(new Date(this.visit.visitDate));
+    this.visitForm.controls.nextFollowUp.setValue(this.visit.nextFollowUp ? new Date(this.visit.nextFollowUp) : '');
+    this.getMinFollowUpdate();
     this.visitForm.controls.temperature.setValue(this.visit.temperature);
     this.visitForm.controls.pulse.setValue(this.visit.pulse);
     this.visitForm.controls.spo2.setValue(this.visit.spo2);
@@ -367,6 +374,7 @@ export class VisitEditComponent implements OnInit, OnChanges {
       this.finalPathologyList = this.visit.pathology.split(',');
     }
     this.showDrugs = true;
+    this.loader = false;
   }
   getSelectedValue(i: number, fieldName: string) {
     return this.prescriptionsArray && this.prescriptionsArray[i] && this.prescriptionsArray[i][fieldName]
@@ -424,6 +432,12 @@ export class VisitEditComponent implements OnInit, OnChanges {
   }
 
   onSubmit(visit: Visit) {
+    visit.visitDate = new Date().toISOString();
+    if (visit.nextFollowUp) {
+      visit.nextFollowUp = new Date(visit.nextFollowUp).toISOString();
+    } else {
+      visit.nextFollowUp = '';
+    }
     visit.id = null;
     visit.patient = this.currentPatient;
     if (this.bmi !== 0) {
@@ -461,15 +475,15 @@ export class VisitEditComponent implements OnInit, OnChanges {
           const result = dialogResult;
           if (result) {
             this.loader = false;
-            this.router.navigate(['/visits', this.visit.id, 'edit']);
+            this.router.navigate(['/patients', this.visit.patient.id, 'visits', this.visit.id, 'edit']);
           }
         });
       });
-    this.addNewlyAddedDiagnosis();
-    this.addNewlyAddedObservations();
-    this.addNewlyAddedComplaints();
-    this.addNewlyAddedPathology();
-    this.addNewlyAddedRadiology();
+    // this.addNewlyAddedDiagnosis();
+    // this.addNewlyAddedObservations();
+    // this.addNewlyAddedComplaints();
+    // this.addNewlyAddedPathology();
+    // this.addNewlyAddedRadiology();
   }
   addNewlyAddedPathology() {
     const newlyAddedPathologyScan = this.finalPathologyList.filter(x => !this.pathologyList.includes(x));

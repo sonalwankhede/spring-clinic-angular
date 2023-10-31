@@ -1,5 +1,5 @@
 <section class="parent padding-top">
-  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;min-width: 1288.41px" *ngIf="showVisitForm">
+  <mat-card fxFlex="500px" fxFlex.xs="100%" style="align-content: center;min-width: 1288.41px" *ngIf="!loader">
     <mat-card-title style="background-color: skyblue; ">Add a New Visit For :: {{visit.patient.firstName}}
       {{visit.patient.lastName}}</mat-card-title>
     <div style="align-content: center;" *ngIf="!loader">
@@ -151,13 +151,18 @@
             [selectedChipsList]="finalRadiologyList">
           </app-chips-add>
         </mat-card-content>
-
+        <mat-form-field appearance="none" style="width: 25% !important;">
+          <mat-label>Next Follow Up On</mat-label>
+          <input matInput [min]="minDate" [matDatepicker]="nextFollowUpPicker" placeholder="Next Follow Up On" formControlName="nextFollowUp">
+          <mat-datepicker-toggle matSuffix [for]="nextFollowUpPicker"></mat-datepicker-toggle>
+          <mat-datepicker #nextFollowUpPicker></mat-datepicker>
+        </mat-form-field>
         <mat-card-actions align="center">
           <button mat-raised-button color="primary" [disabled]="isFormInvalid()">Create Prescription</button>
           <button type="button" mat-raised-button color="warn" (click)="gotoPatientList()">Cancel</button>
         </mat-card-actions>
       </form>
     </div>
-    <mat-spinner style="margin:0 auto;" *ngIf="loader"></mat-spinner>
   </mat-card>
+  <mat-spinner style="margin:0 auto;margin-top: 100px;" *ngIf="loader"></mat-spinner>
 </section>

@@ -34,11 +34,12 @@ import { CommonService } from 'app/common.service';
 import { Diagnosis } from 'app/models/diagnosis';
 import { DrugService } from 'app/drugs/drug.service';
 import { Validators } from '@angular/forms';
-import { forkJoin } from 'rxjs';
+import { forkJoin, throwError } from 'rxjs';
 import { FormArray } from '@angular/forms';
 import { AlertDialogComponent } from 'app/common-component/dialog/alert-dialog/alert-dialog.component';
 import { ConfirmDialogModel } from 'app/common-component/dialog/confirm-dialog/confirm-dialog.component';
 import { MatDialogRef, MatDialog } from '@angular/material';
+import * as moment from 'moment';
 
 
 export class PrescriptedDrugs {
@@ -163,6 +164,7 @@ export class VisitAddComponent implements OnInit, OnChanges {
   bmiColor: string;
   bmiHint: string;
   dialogRef: MatDialogRef<AlertDialogComponent>;
+  minDate: any;
 
   constructor(private visitService: VisitService, private patientService: PatientService,
     private commonService: CommonService, private drugService: DrugService, public dialog: MatDialog,
@@ -202,7 +204,8 @@ export class VisitAddComponent implements OnInit, OnChanges {
       diagnosis: new FormControl('', []),
       prescriptions: this.formBuilder.array([this.createDrugArray()]),
       pathology: new FormControl('No', []),
-      radiology: new FormControl('No', [])
+      radiology: new FormControl('No', []),
+      nextFollowUp: new FormControl('', []),
     });
   }
   isFormInvalid(): boolean {
@@ -252,12 +255,12 @@ export class VisitAddComponent implements OnInit, OnChanges {
   }
   setListValue(event, i, fieldName) {
     if (fieldName === 'serialNumber') {
-      i = Number(i);
-    }
-    this.prescriptionsArray[i] ? this.prescriptionsArray[i][fieldName] = event
-      : this.prescriptionsArray[i] = this.getPrescriptionObject(), this.prescriptionsArray[i][fieldName] = event;
-    if (fieldName !== 'serialNumber') {
-      this.prescriptionsArray[i].serialNumber = i + 1;
+      this.prescriptionsArray[i] ? this.prescriptionsArray[i][fieldName] = Number(event)
+        : this.prescriptionsArray[i] = this.getPrescriptionObject(), this.prescriptionsArray[i][fieldName] = Number(event);
+    } else {
+      this.prescriptionsArray[i] ? this.prescriptionsArray[i][fieldName] = event
+        : this.prescriptionsArray[i] = this.getPrescriptionObject(), this.prescriptionsArray[i][fieldName] = event;
+      this.prescriptionsArray[i].serialNumber === 0 && this.prescriptionsArray.length === 1 ? this.prescriptionsArray[i].serialNumber = 1 : '';
     }
     this.visitForm.get('prescriptions').setValue(this.prescriptionsArray);
   }
@@ -298,15 +301,15 @@ export class VisitAddComponent implements OnInit, OnChanges {
     // changes.prop contains the old and the new value...
   }
   ngOnInit() {
-    console.log(this.route.parent);
     const patientId = this.route.snapshot.params.id;
-
+    this.loader = true;
     this.patientService.getPatientById(patientId).subscribe(
       response => {
         this.currentPatient = response;
         this.visit.patient = this.currentPatient;
-        this.showVisitForm = true;
+        this.getMinFollowUpdate();
       }, (error) => {
+        this.loader = false;
         this.errorMessage = error as any;
       });
     forkJoin([
@@ -332,7 +335,13 @@ export class VisitAddComponent implements OnInit, OnChanges {
         this.drugsList.push((obj.formOfDrugs ? obj.formOfDrugs.substring(0, 3) + '. ' : '') +
           (obj.brandName ? obj.brandName : '') + (obj.content ? ' (' + obj.content + ') ' : '') + (obj.strength ? obj.strength : ''));
       }
+      this.loader = false;
     });
+  }
+  getMinFollowUpdate() {
+    var newdate = new Date(new Date(this.visitForm.get('visitDate').value));
+    newdate.setDate(newdate.getDate() + 1);
+    this.minDate = newdate;
   }
   calculateBmi(value, field) {
     if (field === 'height') {
@@ -380,6 +389,11 @@ export class VisitAddComponent implements OnInit, OnChanges {
 
   onSubmit(visit: Visit) {
     visit.id = null;
+    if (visit.nextFollowUp) {
+      visit.nextFollowUp = new Date(visit.nextFollowUp).toISOString();
+    } else {
+      visit.nextFollowUp = '';
+    }
     visit.patient = this.currentPatient;
     if (this.bmi !== 0) {
       visit.bmi = this.bmi;
@@ -422,11 +436,11 @@ export class VisitAddComponent implements OnInit, OnChanges {
           }
         });
       });
-    this.addNewlyAddedDiagnosis();
-    this.addNewlyAddedObservations();
-    this.addNewlyAddedComplaints();
-    this.addNewlyAddedPathology();
-    this.addNewlyAddedRadiology();
+    // this.addNewlyAddedDiagnosis();
+    // this.addNewlyAddedObservations();
+    // this.addNewlyAddedComplaints();
+    // this.addNewlyAddedPathology();
+    // this.addNewlyAddedRadiology();
   }
   addNewlyAddedPathology() {
     const newlyAddedPathologyScan = this.finalPathologyList.filter(x => !this.pathologyList.includes(x));
@@ -520,4 +534,5 @@ export class VisitAddComponent implements OnInit, OnChanges {
   gotoPatientList() {
     this.router.navigate(['/patients']);
   }
+
 }

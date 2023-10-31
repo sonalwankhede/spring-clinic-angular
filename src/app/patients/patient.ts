@@ -27,7 +27,7 @@ export interface Patient {
   firstName: string;
   lastName: string;
   middleName: string;
-  age: number;
+  age: string;
   gender: string;
   address: string;
   city: string;

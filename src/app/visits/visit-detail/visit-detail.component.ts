@@ -95,9 +95,11 @@ export class VisitDetailComponent implements OnInit {
     }
   }
   goToEdit() {
+    this.loader = true;
     this.router.navigate(['/patients', this.visit.patient.id, 'visits', this.visit.id, 'edit']);
   }
   goToPatient() {
+    this.loader = true;
     this.router.navigate(['/patients', this.visit.patient.id, 'edit']);
   }
   public SavePDF(): void {
@@ -108,13 +110,18 @@ export class VisitDetailComponent implements OnInit {
 
     html2canvas(DATA).then(canvas => {
 
+      var ctx = canvas.getContext('2d');
+      //set the image quality
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+
       let fileWidth = 180;
       let fileHeight = canvas.height * fileWidth / canvas.width;
 
       const FILEURI = canvas.toDataURL('image/png')
       let PDF = new jsPDF('p', 'in', [510, 737]);
       let position = 0;
-      PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight, 'alias', 'SLOW')
+      PDF.addImage(FILEURI, 'PNG', 0, position, fileWidth, fileHeight, 'alias', 'FAST')
       PDF.save((this.currentPatient.firstName + '_' + this.currentPatient.middleName + '_' + this.currentPatient.lastName + '_' + this.visitdate + '.pdf').replace(/   /g, '_'));
       this.showTable = true;
       this.loader = false;

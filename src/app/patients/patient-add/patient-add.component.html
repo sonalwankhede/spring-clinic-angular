@@ -39,30 +39,37 @@
         </mat-card-content>
 
         <mat-card-content>
-          <mat-form-field appearance="none">
+          <mat-form-field appearance="none" style="width: 15% !important;">
+            <mat-label>DoB</mat-label>
             <input class="input" matInput [matDatepicker]="picker" placeholder="Patient's DoB"
               formControlName="dob" id="dob" (dateChange)="calculateAge($event.target.value)">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
           &nbsp;&nbsp;&nbsp;
-          <mat-form-field style="   width:130px !important;" appearance="outline">
+          <mat-form-field style="width: 10% !important;" appearance="outline">
             <mat-label>Age</mat-label>
-            <input class="input" matInput type="number" min="0" placeholder="Patient's Age" formControlName="age"
+            <input class="input" matInput type="text" min="0" placeholder="Patient's Age" formControlName="age"
               id="age">
             <mat-error *ngIf="hasError('age', 'required')">Age is required</mat-error>
             <mat-error *ngIf="hasError('age', 'min')">Age can't be negative</mat-error>
           </mat-form-field>
-          
+          &nbsp;&nbsp;&nbsp;
+
+          <mat-form-field style="width: 15% !important;" appearance="outline">
+            <mat-label>Telephone</mat-label>
+            <input class="input" matInput type="number" min="0" placeholder="Patient's Telephone" formControlName="telephone"
+              id="telephone">
+          </mat-form-field>
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <mat-form-field appearance="outline">
+          <mat-form-field style="width: 30% !important;" appearance="outline">
             <mat-label>Address</mat-label>
             <input class="input" matInput type="text" placeholder="Patient's address" formControlName="address">
             <mat-hint align="end">Not more then 100 characters long.</mat-hint>
           </mat-form-field>
           &nbsp;&nbsp;&nbsp;&nbsp;
 
-          <mat-form-field appearance="outline">
+          <mat-form-field style="width: 22% !important;" appearance="outline">
             <mat-label>City</mat-label>
             <input class="input" matInput type="text" placeholder="Patient's City" formControlName="city">
             <mat-hint align="end">Not more then 100 characters long.</mat-hint>
