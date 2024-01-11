@@ -15,7 +15,7 @@ export class AuthenticationService {
 //store JWT token in session
   authenticate(username, password) {
     return this.httpClient
-      .post<any>("http://doctorsnehalayucare-env.eba-pfv3bz7q.ap-south-1.elasticbeanstalk.com/clinic/authenticate", { "username":username, password })
+      .post<any>("http://localhost:5000/clinic/authenticate", { "username":username, password })
       .pipe(
         map(userData => {
           localStorage.setItem("username", username);
